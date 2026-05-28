@@ -4,7 +4,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>OKX 市场监控</title>
-<script src="https://unpkg.com/lightweight-charts@4.1.1/dist/lightweight-charts.standalone.production.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/lightweight-charts@4.1.1/dist/lightweight-charts.standalone.production.js"></script>
 <style>
 :root{--bg:#0e0f11;--bg2:#161a1d;--bg3:#1e2329;--bd:#2b2f36;--t1:#eaecef;--t2:#848e9c;--t3:#5e6673;--green:#0ecb81;--red:#f6465d;--blue:#1890ff;--amber:#f0b90b;}
 *{box-sizing:border-box;margin:0;padding:0;}
@@ -230,8 +230,7 @@ function calcCVD(data){
 // ── Chart init ──
 function mkChart(wrap,showTime,margins){
   var c=LightweightCharts.createChart(wrap,{
-    width:wrap.clientWidth||600,
-    height:wrap.clientHeight||300,
+    autoSize:true,
     layout:{background:{color:'#0e0f11'},textColor:'#848e9c'},
     grid:{vertLines:{color:'#1e2329'},horzLines:{color:'#1e2329'}},
     crosshair:{mode:LightweightCharts.CrosshairMode.Normal},
@@ -239,9 +238,6 @@ function mkChart(wrap,showTime,margins){
     timeScale:{borderColor:'#2b2f36',timeVisible:true,secondsVisible:false,visible:showTime!==false},
     handleScale:{mouseWheel:true,pinch:true},
   });
-  new ResizeObserver(function(){
-    c.applyOptions({width:wrap.clientWidth,height:wrap.clientHeight});
-  }).observe(wrap);
   return c;
 }
 
@@ -597,17 +593,18 @@ async function loadAll(){
 }
 
 // Init after layout is ready
-window.addEventListener('load',function(){
-  requestAnimationFrame(function(){
-    requestAnimationFrame(function(){
-      initCharts();
-      setupToggles();
-      setupSearch();
-      setupTf();
-      loadInsts().then(function(){return loadAll();});
-    });
-  });
-});
+// 等待 LightweightCharts 就绪后初始化
+function startApp(){
+  if(typeof LightweightCharts==='undefined'){setTimeout(startApp,50);return;}
+  setTimeout(function(){
+    initCharts();
+    setupToggles();
+    setupSearch();
+    setupTf();
+    loadInsts().then(function(){return loadAll();});
+  },0);
+}
+startApp();
 </script>
 </body>
 </html>

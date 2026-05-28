@@ -7,356 +7,226 @@
 <script src="https://unpkg.com/lightweight-charts@4.1.1/dist/lightweight-charts.standalone.production.js"></script>
 <style>
 :root {
-  --bg:      #0e0f11;
-  --bg2:     #161a1d;
-  --bg3:     #1e2329;
-  --border:  #2b2f36;
-  --text:    #eaecef;
-  --text2:   #848e9c;
-  --text3:   #5e6673;
-  --green:   #0ecb81;
-  --red:     #f6465d;
-  --blue:    #1890ff;
-  --amber:   #f0b90b;
+  --bg:    #0e0f11;
+  --bg2:   #161a1d;
+  --bg3:   #1e2329;
+  --bd:    #2b2f36;
+  --t1:    #eaecef;
+  --t2:    #848e9c;
+  --t3:    #5e6673;
+  --green: #0ecb81;
+  --red:   #f6465d;
+  --blue:  #1890ff;
+  --amber: #f0b90b;
 }
 * { box-sizing: border-box; margin: 0; padding: 0; }
 html, body { height: 100%; overflow: hidden; }
 body { font-family: -apple-system, 'PingFang SC', 'Microsoft YaHei', sans-serif;
-       background: var(--bg); color: var(--text); font-size: 13px; }
+       background: var(--bg); color: var(--t1); font-size: 13px; }
 
-/* ── HEADER ── */
 .header {
-  height: 52px; background: var(--bg2);
-  border-bottom: 1px solid var(--border);
-  display: flex; align-items: center; padding: 0 16px; gap: 12px; flex-shrink: 0;
+  height: 52px; background: var(--bg2); border-bottom: 1px solid var(--bd);
+  display: flex; align-items: center; padding: 0 16px; gap: 12px;
 }
-.logo { font-size: 15px; font-weight: 600; white-space: nowrap; }
+.logo { font-size: 15px; font-weight: 600; }
 .logo span { color: var(--blue); }
 
 .search-wrap { position: relative; }
 .search-input {
-  background: var(--bg3); border: 1px solid var(--border);
-  border-radius: 4px; padding: 6px 12px; color: var(--text);
-  font-size: 13px; width: 200px; outline: none;
+  background: var(--bg3); border: 1px solid var(--bd); border-radius: 4px;
+  padding: 6px 12px; color: var(--t1); font-size: 13px; width: 200px; outline: none;
 }
 .search-input:focus { border-color: var(--blue); }
-.search-dropdown {
+.search-dd {
   position: absolute; top: calc(100% + 4px); left: 0; width: 240px;
-  background: var(--bg2); border: 1px solid var(--border);
-  border-radius: 4px; max-height: 260px; overflow-y: auto; z-index: 200; display: none;
+  background: var(--bg2); border: 1px solid var(--bd); border-radius: 4px;
+  max-height: 260px; overflow-y: auto; z-index: 200; display: none;
 }
-.search-item { padding: 8px 12px; cursor: pointer; color: var(--text2); font-size: 13px; }
-.search-item:hover, .search-item.selected { background: var(--bg3); color: var(--text); }
+.dd-item { padding: 8px 12px; cursor: pointer; color: var(--t2); }
+.dd-item:hover { background: var(--bg3); color: var(--t1); }
 
 .tf-group { display: flex; gap: 4px; }
 .tf-btn {
-  padding: 5px 11px; border-radius: 4px; border: 1px solid var(--border);
-  background: transparent; color: var(--text2); cursor: pointer; font-size: 12px;
-  transition: all 0.15s;
+  padding: 5px 11px; border-radius: 4px; border: 1px solid var(--bd);
+  background: transparent; color: var(--t2); cursor: pointer; font-size: 12px;
 }
-.tf-btn:hover { border-color: var(--blue); color: var(--text); }
+.tf-btn:hover { border-color: var(--blue); color: var(--t1); }
 .tf-btn.active { background: var(--blue); border-color: var(--blue); color: #fff; }
 
-.header-right { margin-left: auto; display: flex; align-items: center; gap: 8px; }
+.hdr-right { margin-left: auto; display: flex; align-items: center; gap: 8px; }
 .dot { width: 7px; height: 7px; border-radius: 50%; background: var(--green); }
-.dot.loading { background: var(--amber); animation: pulse 1s infinite; }
+.dot.spin { background: var(--amber); animation: pulse 1s infinite; }
 @keyframes pulse { 0%,100%{opacity:1} 50%{opacity:0.3} }
-.refresh-label { font-size: 11px; color: var(--text3); }
+.ref-lbl { font-size: 11px; color: var(--t3); }
 
-/* ── LAYOUT ── */
-.main { display: flex; height: calc(100vh - 52px); overflow: hidden; }
+.main { display: flex; height: calc(100vh - 52px); }
 
-/* ── CHART SECTION ── */
-.chart-section {
-  flex: 1; min-width: 0; display: flex; flex-direction: column;
-  border-right: 1px solid var(--border);
-}
-.chart-info {
-  padding: 10px 16px; border-bottom: 1px solid var(--border);
-  display: flex; align-items: baseline; gap: 10px; flex-shrink: 0;
-}
-.price-main { font-size: 22px; font-weight: 600; font-variant-numeric: tabular-nums; }
-.price-chg { font-size: 13px; font-variant-numeric: tabular-nums; }
-.inst-tag { font-size: 11px; color: var(--text3); margin-left: 4px; }
+.chart-sec { flex: 1; min-width: 0; display: flex; flex-direction: column; border-right: 1px solid var(--bd); }
+.chart-info { padding: 10px 16px; border-bottom: 1px solid var(--bd); display: flex; align-items: baseline; gap: 10px; flex-shrink: 0; }
+.px-main { font-size: 22px; font-weight: 600; }
+.px-chg  { font-size: 13px; }
+.inst-tag { font-size: 11px; color: var(--t3); }
 .chart-wrap { flex: 1; min-height: 0; position: relative; }
-.chart-placeholder {
-  position: absolute; inset: 0; display: flex; align-items: center;
-  justify-content: center; color: var(--text2); gap: 8px;
-}
-.spinner {
-  width: 18px; height: 18px; border: 2px solid var(--border);
-  border-top-color: var(--blue); border-radius: 50%;
-  animation: spin 0.8s linear infinite;
-}
+.chart-ph { position: absolute; inset: 0; display: flex; align-items: center; justify-content: center; color: var(--t2); gap: 8px; }
+.spinner { width: 18px; height: 18px; border: 2px solid var(--bd); border-top-color: var(--blue); border-radius: 50%; animation: spin 0.8s linear infinite; }
 @keyframes spin { to { transform: rotate(360deg); } }
 
-/* ── RIGHT PANEL ── */
-.panel { width: 310px; flex-shrink: 0; overflow-y: auto; display: flex; flex-direction: column; }
+.panel { width: 310px; flex-shrink: 0; overflow-y: auto; }
+.panel::-webkit-scrollbar { width: 3px; }
+.panel::-webkit-scrollbar-thumb { background: var(--bd); }
 
-.panel-block { border-bottom: 1px solid var(--border); padding: 14px 14px 12px; }
-.block-title {
-  font-size: 10px; color: var(--text3); text-transform: uppercase;
-  letter-spacing: 0.07em; margin-bottom: 10px;
-}
+.pblock { border-bottom: 1px solid var(--bd); padding: 14px; }
+.blk-title { font-size: 10px; color: var(--t3); text-transform: uppercase; letter-spacing: 0.07em; margin-bottom: 10px; }
 
-/* Signal box */
-.signal-box {
-  display: flex; align-items: center; gap: 12px;
-  padding: 12px 14px; border-radius: 6px; border: 1px solid transparent;
-  margin-bottom: 8px;
-}
-.sb-bull  { background: rgba(14,203,129,0.08); border-color: rgba(14,203,129,0.25); }
-.sb-bear  { background: rgba(246,70,93,0.08);  border-color: rgba(246,70,93,0.25); }
-.sb-neu   { background: rgba(132,142,156,0.07); border-color: rgba(132,142,156,0.18); }
-.signal-icon { font-size: 26px; line-height: 1; }
-.signal-score { font-size: 20px; font-weight: 600; }
-.signal-name  { font-size: 13px; font-weight: 500; margin-left: 4px; }
-.signal-desc  { font-size: 11px; color: var(--text2); margin-top: 3px; }
+.sig-box { display: flex; align-items: center; gap: 12px; padding: 12px; border-radius: 6px; border: 1px solid transparent; margin-bottom: 8px; }
+.sb-bull { background: rgba(14,203,129,0.08); border-color: rgba(14,203,129,0.25); }
+.sb-bear { background: rgba(246,70,93,0.08);  border-color: rgba(246,70,93,0.25); }
+.sb-neu  { background: rgba(132,142,156,0.07); border-color: rgba(132,142,156,0.18); }
+.sig-ico   { font-size: 26px; line-height: 1; }
+.sig-score { font-size: 20px; font-weight: 600; }
+.sig-name  { font-size: 13px; font-weight: 500; margin-left: 4px; }
+.sig-desc  { font-size: 11px; color: var(--t2); margin-top: 3px; }
 
-/* Score bar */
-.score-track { display: flex; gap: 3px; align-items: center; }
-.score-seg { flex: 1; height: 4px; border-radius: 2px; background: var(--bg3); transition: background 0.3s; }
-.seg-bull { background: var(--green); }
-.seg-bear { background: var(--red); }
+.track { display: flex; gap: 3px; }
+.seg { flex: 1; height: 4px; border-radius: 2px; background: var(--bg3); }
+.seg.bull { background: var(--green); }
+.seg.bear { background: var(--red); }
 
-/* Indicator rows */
-.ind-row {
-  display: flex; justify-content: space-between; align-items: center;
-  padding: 7px 0; border-bottom: 0.5px solid var(--border);
-}
-.ind-row:last-child { border-bottom: none; }
-.ind-lbl { color: var(--text2); font-size: 12px; }
-.ind-right { display: flex; align-items: center; gap: 7px; }
-.ind-val { font-size: 12px; font-weight: 500; font-variant-numeric: tabular-nums; }
-.badge {
-  font-size: 10px; padding: 2px 6px; border-radius: 3px; white-space: nowrap;
-}
+.irow { display: flex; justify-content: space-between; align-items: center; padding: 7px 0; border-bottom: 0.5px solid var(--bd); }
+.irow:last-child { border-bottom: none; }
+.ilbl { color: var(--t2); font-size: 12px; }
+.iright { display: flex; align-items: center; gap: 7px; }
+.ival { font-size: 12px; font-weight: 500; }
+.badge { font-size: 10px; padding: 2px 6px; border-radius: 3px; white-space: nowrap; }
 .b-bull { background: rgba(14,203,129,0.14); color: var(--green); }
 .b-bear { background: rgba(246,70,93,0.14);  color: var(--red); }
-.b-neu  { background: rgba(132,142,156,0.12); color: var(--text2); }
-.b-warn { background: rgba(240,185,11,0.14); color: var(--amber); }
+.b-neu  { background: rgba(132,142,156,0.12); color: var(--t2); }
+.b-warn { background: rgba(240,185,11,0.14);  color: var(--amber); }
 
-/* Liquidation rows */
-.liq-row {
-  display: flex; justify-content: space-between; align-items: center;
-  padding: 5px 0; font-size: 11px; border-bottom: 0.5px solid var(--border);
-}
+.liq-row { display: flex; justify-content: space-between; padding: 5px 0; font-size: 11px; border-bottom: 0.5px solid var(--bd); }
 .liq-row:last-child { border-bottom: none; }
-.liq-side { min-width: 56px; font-weight: 500; }
-.liq-empty { font-size: 11px; color: var(--text3); }
+.liq-empty { font-size: 11px; color: var(--t3); }
 
-/* Scrollbar */
-.panel::-webkit-scrollbar { width: 3px; }
-.panel::-webkit-scrollbar-track { background: transparent; }
-.panel::-webkit-scrollbar-thumb { background: var(--border); border-radius: 2px; }
-.search-dropdown::-webkit-scrollbar { width: 3px; }
-.search-dropdown::-webkit-scrollbar-thumb { background: var(--border); }
-
-/* Worker config banner */
-.config-banner {
-  background: rgba(240,185,11,0.1); border: 1px solid rgba(240,185,11,0.3);
-  border-radius: 4px; padding: 8px 12px; margin: 10px 14px 0;
-  font-size: 11px; color: var(--amber); line-height: 1.5;
-  display: none;
-}
+.warn-bar { background: rgba(240,185,11,0.1); border: 1px solid rgba(240,185,11,0.3); border-radius: 4px; padding: 8px 12px; margin: 10px 14px 0; font-size: 11px; color: var(--amber); line-height: 1.5; display: none; }
 </style>
 </head>
 <body>
 
-<!-- ══════════════════ HEADER ══════════════════ -->
 <div class="header">
   <div class="logo">OKX <span>Monitor</span></div>
-
   <div class="search-wrap">
-    <input class="search-input" id="search-input"
-           placeholder="搜索合约，如 BTC-USDT-SWAP" autocomplete="off" spellcheck="false" />
-    <div class="search-dropdown" id="search-dropdown"></div>
+    <input class="search-input" id="sinput" placeholder="搜索合约，如 BTC-USDT-SWAP" autocomplete="off" />
+    <div class="search-dd" id="sdd"></div>
   </div>
-
-  <div class="tf-group" id="tf-group">
+  <div class="tf-group">
     <button class="tf-btn" data-tf="5m">5M</button>
     <button class="tf-btn" data-tf="15m">15M</button>
     <button class="tf-btn active" data-tf="1H">1H</button>
     <button class="tf-btn" data-tf="4H">4H</button>
   </div>
-
-  <div class="header-right">
-    <div class="dot loading" id="status-dot"></div>
-    <span class="refresh-label" id="refresh-label">加载中...</span>
+  <div class="hdr-right">
+    <div class="dot spin" id="dot"></div>
+    <span class="ref-lbl" id="rlbl">加载中...</span>
   </div>
 </div>
 
-<!-- ══════════════════ MAIN ══════════════════ -->
 <div class="main">
-
-  <!-- K线区 -->
-  <div class="chart-section">
+  <div class="chart-sec">
     <div class="chart-info">
-      <span class="price-main" id="price-main">--</span>
-      <span class="price-chg"  id="price-chg">--</span>
-      <span class="inst-tag"   id="inst-tag">BTC-USDT-SWAP</span>
+      <span class="px-main" id="pxMain">--</span>
+      <span class="px-chg"  id="pxChg">--</span>
+      <span class="inst-tag" id="instTag">BTC-USDT-SWAP</span>
     </div>
-    <div class="chart-wrap" id="chart-wrap">
-      <div class="chart-placeholder" id="chart-placeholder">
-        <div class="spinner"></div><span>正在加载 K 线...</span>
-      </div>
+    <div class="chart-wrap" id="chartWrap">
+      <div class="chart-ph" id="chartPh"><div class="spinner"></div> 正在加载 K 线...</div>
     </div>
   </div>
 
-  <!-- 右侧面板 -->
   <div class="panel">
+    <div class="warn-bar" id="warnBar">⚠ 多空比 / Taker 需配置 Cloudflare Worker<br>请在 index.html 顶部填写 WORKER_URL</div>
 
-    <!-- Worker 配置提示 -->
-    <div class="config-banner" id="config-banner">
-      ⚠ 多空比 / Taker 数据需配置 Cloudflare Worker<br>
-      请编辑 index.html 顶部的 WORKER_URL
-    </div>
-
-    <!-- 综合信号 -->
-    <div class="panel-block">
-      <div class="block-title">综合信号</div>
-      <div class="signal-box sb-neu" id="signal-box">
-        <div class="signal-icon" id="signal-icon">⏳</div>
+    <div class="pblock">
+      <div class="blk-title">综合信号</div>
+      <div class="sig-box sb-neu" id="sigBox">
+        <div class="sig-ico" id="sigIco">⏳</div>
         <div>
-          <div>
-            <span class="signal-score" id="signal-score">--</span>
-            <span class="signal-name"  id="signal-name">加载中</span>
-          </div>
-          <div class="signal-desc" id="signal-desc">正在获取指标数据...</div>
+          <div><span class="sig-score" id="sigScore">--</span><span class="sig-name" id="sigName">加载中</span></div>
+          <div class="sig-desc" id="sigDesc">正在获取数据...</div>
         </div>
       </div>
-      <div class="score-track" id="score-track"></div>
+      <div class="track" id="track"></div>
     </div>
 
-    <!-- 资金 & 价差 -->
-    <div class="panel-block">
-      <div class="block-title">资金 & 价差</div>
-
-      <div class="ind-row">
-        <span class="ind-lbl">资金费率（当前）</span>
-        <div class="ind-right">
-          <span class="ind-val" id="fr-val">--</span>
-          <span class="badge b-neu" id="fr-badge">--</span>
-        </div>
-      </div>
-
-      <div class="ind-row">
-        <span class="ind-lbl">下次结算</span>
-        <span class="ind-val" id="fr-next-time">--</span>
-      </div>
-
-      <div class="ind-row">
-        <span class="ind-lbl">预测费率</span>
-        <div class="ind-right">
-          <span class="ind-val" id="fr-next-val">--</span>
-        </div>
-      </div>
-
-      <div class="ind-row">
-        <span class="ind-lbl">标记价格</span>
-        <span class="ind-val" id="mark-px">--</span>
-      </div>
-
-      <div class="ind-row">
-        <span class="ind-lbl">指数价格</span>
-        <span class="ind-val" id="idx-px">--</span>
-      </div>
-
-      <div class="ind-row">
-        <span class="ind-lbl">基差（Basis）</span>
-        <div class="ind-right">
-          <span class="ind-val" id="basis-val">--</span>
-          <span class="badge b-neu" id="basis-badge">--</span>
-        </div>
-      </div>
+    <div class="pblock">
+      <div class="blk-title">资金 & 价差</div>
+      <div class="irow"><span class="ilbl">资金费率（当前）</span><div class="iright"><span class="ival" id="frVal">--</span><span class="badge b-neu" id="frBadge">--</span></div></div>
+      <div class="irow"><span class="ilbl">下次结算</span><span class="ival" id="frTime">--</span></div>
+      <div class="irow"><span class="ilbl">预测费率</span><span class="ival" id="frNext">--</span></div>
+      <div class="irow"><span class="ilbl">标记价格</span><span class="ival" id="markPx">--</span></div>
+      <div class="irow"><span class="ilbl">指数价格</span><span class="ival" id="idxPx">--</span></div>
+      <div class="irow"><span class="ilbl">基差（Basis）</span><div class="iright"><span class="ival" id="basisVal">--</span><span class="badge b-neu" id="basisBadge">--</span></div></div>
     </div>
 
-    <!-- 持仓情绪 -->
-    <div class="panel-block">
-      <div class="block-title">持仓情绪</div>
-
-      <div class="ind-row">
-        <span class="ind-lbl">未平仓合约</span>
-        <span class="ind-val" id="oi-val">--</span>
-      </div>
-
-      <div class="ind-row">
-        <span class="ind-lbl">散户多空比</span>
-        <div class="ind-right">
-          <span class="ind-val" id="ls-retail-val">--</span>
-          <span class="badge b-neu" id="ls-retail-badge">--</span>
-        </div>
-      </div>
-
-      <div class="ind-row">
-        <span class="ind-lbl">大户多空比</span>
-        <div class="ind-right">
-          <span class="ind-val" id="ls-top-val">--</span>
-          <span class="badge b-neu" id="ls-top-badge">--</span>
-        </div>
-      </div>
-
-      <div class="ind-row">
-        <span class="ind-lbl">Taker 买入占比</span>
-        <div class="ind-right">
-          <span class="ind-val" id="taker-val">--</span>
-          <span class="badge b-neu" id="taker-badge">--</span>
-        </div>
-      </div>
+    <div class="pblock">
+      <div class="blk-title">持仓情绪</div>
+      <div class="irow"><span class="ilbl">未平仓合约</span><span class="ival" id="oiVal">--</span></div>
+      <div class="irow"><span class="ilbl">散户多空比</span><div class="iright"><span class="ival" id="lsRetail">--</span><span class="badge b-neu" id="lsRetailB">--</span></div></div>
+      <div class="irow"><span class="ilbl">大户多空比</span><div class="iright"><span class="ival" id="lsTop">--</span><span class="badge b-neu" id="lsTopB">--</span></div></div>
+      <div class="irow"><span class="ilbl">Taker 买入占比</span><div class="iright"><span class="ival" id="takerVal">--</span><span class="badge b-neu" id="takerB">--</span></div></div>
     </div>
 
-    <!-- 近期爆仓 -->
-    <div class="panel-block">
-      <div class="block-title">近期大额爆仓</div>
-      <div id="liq-list"><div class="liq-empty">加载中...</div></div>
+    <div class="pblock">
+      <div class="blk-title">近期大额爆仓</div>
+      <div id="liqList"><div class="liq-empty">加载中...</div></div>
     </div>
-
   </div>
 </div>
 
 <script>
-// ================================================================
-// ⚙ 配置区 — 部署后将下面的 URL 替换为你的 Cloudflare Worker 地址
-// ================================================================
-const WORKER_URL = 'okx-proxy.movocardnow.workers.dev';
-// ================================================================
+// ============================================================
+// 配置：把下面替换成你的 Cloudflare Worker 地址
+// ============================================================
+var WORKER_URL = 'https://okx-proxy.movocardnow.workers.dev';
+// ============================================================
 
-// ── State ──
-let instId    = 'BTC-USDT-SWAP';
-let tf        = '1H';
-let chart     = null;
-let candles   = null;
-let allInsts  = [];
-let scores    = {};
-let timer     = null;
-let lastClose = 0;
-let workerOk  = (WORKER_URL !== 'const WORKER_URL = 'okx-proxy.movocardnow.workers.dev';');
+var instId   = 'BTC-USDT-SWAP';
+var tf       = '1H';
+var chart    = null;
+var series   = null;
+var allInsts = [];
+var scores   = {};
+var timer    = null;
+var lastPx   = 0;
+var workerOk = WORKER_URL.indexOf('YOUR_WORKER') === -1;
 
-// ── Helpers ──
-const $ = id => document.getElementById(id);
-const fmt = (n, d=2) => parseFloat(n).toLocaleString('zh-CN', { minimumFractionDigits: d, maximumFractionDigits: d });
-const fmtPx = n => {
-  const v = parseFloat(n);
-  if (v >= 1000) return v.toLocaleString('zh-CN', { maximumFractionDigits: 2 });
+function el(id) { return document.getElementById(id); }
+
+function fmtPx(n) {
+  var v = parseFloat(n);
+  if (isNaN(v)) return '--';
+  if (v >= 1000) return v.toLocaleString('zh-CN', {maximumFractionDigits: 2});
   if (v >= 1)    return v.toFixed(4);
   return v.toFixed(6);
-};
-
-function getCcy(id) { return id.split('-')[0]; }
-function getIdxId(id) {
-  const parts = id.split('-');
-  return parts[0] + '-' + parts[1];
 }
 
-async function get(url) {
-  const r = await fetch(url);
-  if (!r.ok) throw new Error(r.status);
+function badge(id, text, cls) {
+  var e = el(id);
+  e.textContent = text;
+  e.className = 'badge ' + cls;
+}
+
+function getCcy(id) { return id.split('-')[0]; }
+function getIdxId(id) { var p = id.split('-'); return p[0] + '-' + p[1]; }
+
+async function apiFetch(url) {
+  var r = await fetch(url);
+  if (!r.ok) throw new Error('HTTP ' + r.status);
   return r.json();
 }
 
 // ── Chart ──
 function initChart() {
-  const wrap = $('chart-wrap');
+  var wrap = el('chartWrap');
   wrap.innerHTML = '';
   chart = LightweightCharts.createChart(wrap, {
     width:  wrap.clientWidth,
@@ -367,329 +237,260 @@ function initChart() {
     rightPriceScale: { borderColor: '#2b2f36' },
     timeScale: { borderColor: '#2b2f36', timeVisible: true, secondsVisible: false },
   });
-
-  candles = chart.addCandlestickSeries({
+  series = chart.addCandlestickSeries({
     upColor: '#0ecb81', downColor: '#f6465d',
     borderUpColor: '#0ecb81', borderDownColor: '#f6465d',
     wickUpColor: '#0ecb81', wickDownColor: '#f6465d',
   });
-
-  new ResizeObserver(() => {
+  new ResizeObserver(function() {
     chart.applyOptions({ width: wrap.clientWidth, height: wrap.clientHeight });
   }).observe(wrap);
 }
 
-// ── Load candles ──
+// ── Candles ──
 async function loadCandles() {
   try {
-    const d = await get(`https://www.okx.com/api/v5/market/candles?instId=${instId}&bar=${tf}&limit=300`);
+    var d = await apiFetch('https://www.okx.com/api/v5/market/candles?instId=' + instId + '&bar=' + tf + '&limit=300');
     if (d.code !== '0') return;
-
-    const data = d.data.reverse().map(c => ({
-      time:  Math.floor(parseInt(c[0]) / 1000),
-      open:  parseFloat(c[1]),
-      high:  parseFloat(c[2]),
-      low:   parseFloat(c[3]),
-      close: parseFloat(c[4]),
-    }));
-
-    candles.setData(data);
+    var data = d.data.reverse().map(function(c) {
+      return {
+        time:  Math.floor(parseInt(c[0]) / 1000),
+        open:  parseFloat(c[1]),
+        high:  parseFloat(c[2]),
+        low:   parseFloat(c[3]),
+        close: parseFloat(c[4]),
+      };
+    });
+    series.setData(data);
     chart.timeScale().fitContent();
-
-    const last  = data[data.length - 1];
-    const first = data[0];
-    lastClose   = last.close;
-
-    const chg = ((last.close - first.open) / first.open * 100).toFixed(2);
-    $('price-main').textContent = fmtPx(last.close);
-    $('price-chg').textContent  = `${chg >= 0 ? '+' : ''}${chg}%`;
-    $('price-chg').style.color  = chg >= 0 ? '#0ecb81' : '#f6465d';
-    $('inst-tag').textContent   = instId;
-  } catch(e) { console.warn('candles:', e); }
+    var last  = data[data.length - 1];
+    var first = data[0];
+    lastPx = last.close;
+    var chg = ((last.close - first.open) / first.open * 100).toFixed(2);
+    el('pxMain').textContent = fmtPx(last.close);
+    el('pxChg').textContent  = (chg >= 0 ? '+' : '') + chg + '%';
+    el('pxChg').style.color  = chg >= 0 ? '#0ecb81' : '#f6465d';
+    el('instTag').textContent = instId;
+  } catch(e) { console.warn('candles error:', e); }
 }
 
-// ── Load public indicators ──
+// ── Public indicators ──
 async function loadPublic() {
   try {
-    const [frD, mkD, idxD, oiD] = await Promise.all([
-      get(`https://www.okx.com/api/v5/public/funding-rate?instId=${instId}`),
-      get(`https://www.okx.com/api/v5/public/mark-price?instType=SWAP&instId=${instId}`),
-      get(`https://www.okx.com/api/v5/market/index-tickers?instId=${getIdxId(instId)}`),
-      get(`https://www.okx.com/api/v5/public/open-interest?instId=${instId}`),
+    var results = await Promise.all([
+      apiFetch('https://www.okx.com/api/v5/public/funding-rate?instId=' + instId),
+      apiFetch('https://www.okx.com/api/v5/public/mark-price?instType=SWAP&instId=' + instId),
+      apiFetch('https://www.okx.com/api/v5/market/index-tickers?instId=' + getIdxId(instId)),
+      apiFetch('https://www.okx.com/api/v5/public/open-interest?instId=' + instId),
     ]);
+    var frD = results[0], mkD = results[1], idxD = results[2], oiD = results[3];
 
-    // Funding rate
-    if (frD.code === '0' && frD.data[0]) {
-      const fr      = parseFloat(frD.data[0].fundingRate) * 100;
-      const frNext  = parseFloat(frD.data[0].nextFundingRate) * 100;
-      const nextTs  = parseInt(frD.data[0].nextFundingTime);
-      const mins    = Math.round((nextTs - Date.now()) / 60000);
-      const hhmm    = mins > 60 ? `${Math.floor(mins/60)}h ${mins%60}m` : `${mins}m`;
-
-      $('fr-val').textContent      = fr.toFixed(4) + '%';
-      $('fr-next-val').textContent = frNext.toFixed(4) + '%';
-      $('fr-next-time').textContent = hhmm + ' 后';
-
-      let sc = 0, lbl = '中性', cls = 'b-neu';
+    if (frD.code === '0' && frD.data && frD.data[0]) {
+      var fr     = parseFloat(frD.data[0].fundingRate) * 100;
+      var frNext = parseFloat(frD.data[0].nextFundingRate) * 100;
+      var nextTs = parseInt(frD.data[0].nextFundingTime);
+      var mins   = Math.max(0, Math.round((nextTs - Date.now()) / 60000));
+      var hhmm   = mins > 60 ? Math.floor(mins/60) + 'h ' + (mins%60) + 'm' : mins + 'm';
+      el('frVal').textContent  = fr.toFixed(4) + '%';
+      el('frNext').textContent = frNext.toFixed(4) + '%';
+      el('frTime').textContent = hhmm + ' 后';
+      var sc = 0, lbl = '中性', cls = 'b-neu';
       if      (fr >  0.1)  { sc = -2; lbl = '多头过热'; cls = 'b-bear'; }
       else if (fr >  0.05) { sc = -1; lbl = '偏高';     cls = 'b-warn'; }
       else if (fr < -0.1)  { sc =  2; lbl = '空头拥挤'; cls = 'b-bull'; }
       else if (fr < -0.05) { sc =  1; lbl = '偏低';     cls = 'b-bull'; }
-
-      setBadge('fr-badge', lbl, cls);
+      badge('frBadge', lbl, cls);
       scores.funding = sc;
     }
 
-    // Mark + Index + Basis
-    if (mkD.code === '0' && mkD.data[0]) {
-      const mark = parseFloat(mkD.data[0].markPx);
-      $('mark-px').textContent = fmtPx(mark);
-
-      if (idxD.code === '0' && idxD.data[0]) {
-        const idx   = parseFloat(idxD.data[0].idxPx);
-        const basis = ((mark - idx) / idx * 100);
-        $('idx-px').textContent   = fmtPx(idx);
-        $('basis-val').textContent = basis.toFixed(4) + '%';
-
-        let bLbl = '中性', bCls = 'b-neu';
-        if (basis >  0.1) { bLbl = '期货溢价'; bCls = 'b-bull'; }
-        else if (basis < -0.1) { bLbl = '期货贴水'; bCls = 'b-bear'; }
-        setBadge('basis-badge', bLbl, bCls);
+    if (mkD.code === '0' && mkD.data && mkD.data[0]) {
+      var mark = parseFloat(mkD.data[0].markPx);
+      el('markPx').textContent = fmtPx(mark);
+      if (idxD.code === '0' && idxD.data && idxD.data[0]) {
+        var idx   = parseFloat(idxD.data[0].idxPx);
+        var basis = ((mark - idx) / idx * 100);
+        el('idxPx').textContent    = fmtPx(idx);
+        el('basisVal').textContent = basis.toFixed(4) + '%';
+        var bl = '中性', bc = 'b-neu';
+        if (basis >  0.1) { bl = '期货溢价'; bc = 'b-bull'; }
+        else if (basis < -0.1) { bl = '期货贴水'; bc = 'b-bear'; }
+        badge('basisBadge', bl, bc);
       }
     }
 
-    // OI
-    if (oiD.code === '0' && oiD.data[0]) {
-      const oiCcy = parseFloat(oiD.data[0].oiCcy);
-      const oiUsd = lastClose > 0 ? oiCcy * lastClose : 0;
-      const ccy   = getCcy(instId);
-      if (oiUsd > 1e9)
-        $('oi-val').textContent = '$' + (oiUsd / 1e9).toFixed(2) + 'B';
-      else if (oiUsd > 1e6)
-        $('oi-val').textContent = '$' + (oiUsd / 1e6).toFixed(1) + 'M';
-      else
-        $('oi-val').textContent = oiCcy.toFixed(2) + ' ' + ccy;
+    if (oiD.code === '0' && oiD.data && oiD.data[0]) {
+      var oiCcy = parseFloat(oiD.data[0].oiCcy);
+      var oiUsd = lastPx > 0 ? oiCcy * lastPx : 0;
+      var ccy   = getCcy(instId);
+      if      (oiUsd > 1e9) el('oiVal').textContent = '$' + (oiUsd/1e9).toFixed(2) + 'B';
+      else if (oiUsd > 1e6) el('oiVal').textContent = '$' + (oiUsd/1e6).toFixed(1) + 'M';
+      else                  el('oiVal').textContent = oiCcy.toFixed(2) + ' ' + ccy;
     }
-  } catch(e) { console.warn('public:', e); }
+  } catch(e) { console.warn('public error:', e); }
 }
 
-// ── Load proxy indicators (rubik) ──
+// ── Proxy indicators ──
 async function loadProxy() {
   if (!workerOk) {
-    $('config-banner').style.display = 'block';
-    ['ls-retail-val','ls-top-val','taker-val'].forEach(id => $( id).textContent = 'N/A');
-    ['ls-retail-badge','ls-top-badge','taker-badge'].forEach(id => setBadge(id, '需配置 Worker', 'b-warn'));
+    el('warnBar').style.display = 'block';
+    ['lsRetail','lsTop','takerVal'].forEach(function(id) { el(id).textContent = 'N/A'; });
+    ['lsRetailB','lsTopB','takerB'].forEach(function(id) { badge(id, '需配置 Worker', 'b-warn'); });
     return;
   }
-
-  const ccy = getCcy(instId);
+  var ccy = getCcy(instId);
   try {
-    const [retD, topD, tkD] = await Promise.all([
-      get(`${WORKER_URL}/api/v5/rubik/stat/contracts/long-short-account-ratio?ccy=${ccy}&period=${tf}&limit=1`),
-      get(`${WORKER_URL}/api/v5/rubik/stat/contracts/long-short-account-ratio-contract-top-trader?instId=${instId}&period=${tf}&limit=1`),
-      get(`${WORKER_URL}/api/v5/rubik/stat/taker-volume?ccy=${ccy}&instType=CONTRACTS&period=${tf}&limit=1`),
+    var results = await Promise.all([
+      apiFetch(WORKER_URL + '/api/v5/rubik/stat/contracts/long-short-account-ratio?ccy=' + ccy + '&period=' + tf + '&limit=1'),
+      apiFetch(WORKER_URL + '/api/v5/rubik/stat/contracts/long-short-account-ratio-contract-top-trader?instId=' + instId + '&period=' + tf + '&limit=1'),
+      apiFetch(WORKER_URL + '/api/v5/rubik/stat/taker-volume?ccy=' + ccy + '&instType=CONTRACTS&period=' + tf + '&limit=1'),
     ]);
+    var retD = results[0], topD = results[1], tkD = results[2];
 
-    // Retail L/S
-    if (retD.code === '0' && retD.data[0]) {
-      const r   = parseFloat(retD.data[0][1]);
-      $('ls-retail-val').textContent = r.toFixed(2);
-      let sc = 0, lbl = '中性', cls = 'b-neu';
-      if      (r > 2.0) { sc = -2; lbl = '多头过多'; cls = 'b-bear'; }
-      else if (r > 1.5) { sc = -1; lbl = '偏多头';   cls = 'b-warn'; }
-      else if (r < 0.5) { sc =  2; lbl = '空头过多'; cls = 'b-bull'; }
-      else if (r < 0.67){ sc =  1; lbl = '偏空头';   cls = 'b-bull'; }
-      setBadge('ls-retail-badge', lbl, cls);
+    if (retD.code === '0' && retD.data && retD.data[0]) {
+      var r = parseFloat(retD.data[0][1]);
+      el('lsRetail').textContent = r.toFixed(2);
+      var sc = 0, lbl = '中性', cls = 'b-neu';
+      if      (r > 2.0)  { sc = -2; lbl = '多头过多'; cls = 'b-bear'; }
+      else if (r > 1.5)  { sc = -1; lbl = '偏多头';   cls = 'b-warn'; }
+      else if (r < 0.5)  { sc =  2; lbl = '空头过多'; cls = 'b-bull'; }
+      else if (r < 0.67) { sc =  1; lbl = '偏空头';   cls = 'b-bull'; }
+      badge('lsRetailB', lbl, cls);
       scores.retailLS = sc;
     }
 
-    // Top trader L/S
-    if (topD.code === '0' && topD.data[0]) {
-      const r   = parseFloat(topD.data[0][1]);
-      $('ls-top-val').textContent = r.toFixed(2);
-      let sc = 0, lbl = '中性', cls = 'b-neu';
-      if      (r > 1.5) { sc =  2; lbl = '大户偏多'; cls = 'b-bull'; }
-      else if (r > 1.2) { sc =  1; lbl = '略偏多';   cls = 'b-bull'; }
-      else if (r < 0.67){ sc = -2; lbl = '大户偏空'; cls = 'b-bear'; }
-      else if (r < 0.83){ sc = -1; lbl = '略偏空';   cls = 'b-warn'; }
-      setBadge('ls-top-badge', lbl, cls);
-      scores.topLS = sc;
+    if (topD.code === '0' && topD.data && topD.data[0]) {
+      var r2 = parseFloat(topD.data[0][1]);
+      el('lsTop').textContent = r2.toFixed(2);
+      var sc2 = 0, lbl2 = '中性', cls2 = 'b-neu';
+      if      (r2 > 1.5)  { sc2 =  2; lbl2 = '大户偏多'; cls2 = 'b-bull'; }
+      else if (r2 > 1.2)  { sc2 =  1; lbl2 = '略偏多';   cls2 = 'b-bull'; }
+      else if (r2 < 0.67) { sc2 = -2; lbl2 = '大户偏空'; cls2 = 'b-bear'; }
+      else if (r2 < 0.83) { sc2 = -1; lbl2 = '略偏空';   cls2 = 'b-warn'; }
+      badge('lsTopB', lbl2, cls2);
+      scores.topLS = sc2;
     }
 
-    // Taker
-    if (tkD.code === '0' && tkD.data[0]) {
-      const buyV  = parseFloat(tkD.data[0][1]);
-      const selV  = parseFloat(tkD.data[0][2]);
-      const total = buyV + selV;
-      const pct   = total > 0 ? buyV / total * 100 : 50;
-      $('taker-val').textContent = pct.toFixed(1) + '%';
-      let sc = 0, lbl = '中性', cls = 'b-neu';
-      if      (pct > 60) { sc =  2; lbl = '买盘强势'; cls = 'b-bull'; }
-      else if (pct > 55) { sc =  1; lbl = '买盘偏多'; cls = 'b-bull'; }
-      else if (pct < 40) { sc = -2; lbl = '卖盘强势'; cls = 'b-bear'; }
-      else if (pct < 45) { sc = -1; lbl = '卖盘偏多'; cls = 'b-warn'; }
-      setBadge('taker-badge', lbl, cls);
-      scores.taker = sc;
+    if (tkD.code === '0' && tkD.data && tkD.data[0]) {
+      var buyV = parseFloat(tkD.data[0][1]);
+      var selV = parseFloat(tkD.data[0][2]);
+      var tot  = buyV + selV;
+      var pct  = tot > 0 ? buyV / tot * 100 : 50;
+      el('takerVal').textContent = pct.toFixed(1) + '%';
+      var sc3 = 0, lbl3 = '中性', cls3 = 'b-neu';
+      if      (pct > 60) { sc3 =  2; lbl3 = '买盘强势'; cls3 = 'b-bull'; }
+      else if (pct > 55) { sc3 =  1; lbl3 = '买盘偏多'; cls3 = 'b-bull'; }
+      else if (pct < 40) { sc3 = -2; lbl3 = '卖盘强势'; cls3 = 'b-bear'; }
+      else if (pct < 45) { sc3 = -1; lbl3 = '卖盘偏多'; cls3 = 'b-warn'; }
+      badge('takerB', lbl3, cls3);
+      scores.taker = sc3;
     }
-  } catch(e) {
-    console.warn('proxy:', e);
-    ['ls-retail-val','ls-top-val','taker-val'].forEach(id => $(id).textContent = 'Err');
-  }
+  } catch(e) { console.warn('proxy error:', e); }
 }
 
-// ── Load liquidations ──
+// ── Liquidations ──
 async function loadLiq() {
   try {
-    const d = await get(
-      `https://www.okx.com/api/v5/public/liquidation-orders?instType=SWAP&instId=${instId}&state=filled&limit=10`
-    );
-    if (d.code !== '0' || !d.data || !d.data[0] || !d.data[0].details) {
-      $('liq-list').innerHTML = '<div class="liq-empty">暂无爆仓数据</div>';
+    var d = await apiFetch('https://www.okx.com/api/v5/public/liquidation-orders?instType=SWAP&instId=' + instId + '&state=filled&limit=10');
+    if (d.code !== '0' || !d.data || !d.data[0] || !d.data[0].details || !d.data[0].details.length) {
+      el('liqList').innerHTML = '<div class="liq-empty">暂无近期爆仓</div>';
       return;
     }
-    const rows = d.data[0].details.slice(0, 8);
-    if (!rows.length) {
-      $('liq-list').innerHTML = '<div class="liq-empty">暂无近期爆仓</div>';
-      return;
-    }
-    $('liq-list').innerHTML = rows.map(o => {
-      const isLong = o.side === 'sell';
-      const col    = isLong ? '#f6465d' : '#0ecb81';
-      const lbl    = isLong ? '多头爆仓' : '空头爆仓';
-      const px     = fmtPx(o.bkPx);
-      const sz     = parseFloat(o.sz).toFixed(0);
-      const t      = new Date(parseInt(o.ts));
-      const time   = t.getHours().toString().padStart(2,'0') + ':' + t.getMinutes().toString().padStart(2,'0');
-      return `<div class="liq-row">
-        <span class="liq-side" style="color:${col}">${lbl}</span>
-        <span style="color:var(--text2)">$${px}</span>
-        <span style="color:var(--text2)">${sz} 张</span>
-        <span style="color:var(--text3)">${time}</span>
-      </div>`;
+    el('liqList').innerHTML = d.data[0].details.slice(0, 8).map(function(o) {
+      var isLong = o.side === 'sell';
+      var col    = isLong ? '#f6465d' : '#0ecb81';
+      var lbl    = isLong ? '多头爆仓' : '空头爆仓';
+      var t      = new Date(parseInt(o.ts));
+      var time   = t.getHours().toString().padStart(2,'0') + ':' + t.getMinutes().toString().padStart(2,'0');
+      return '<div class="liq-row"><span style="color:' + col + ';min-width:56px;font-weight:500">' + lbl + '</span><span style="color:var(--t2)">$' + fmtPx(o.bkPx) + '</span><span style="color:var(--t2)">' + parseFloat(o.sz).toFixed(0) + ' 张</span><span style="color:var(--t3)">' + time + '</span></div>';
     }).join('');
   } catch(e) {
-    $('liq-list').innerHTML = '<div class="liq-empty">加载失败</div>';
+    el('liqList').innerHTML = '<div class="liq-empty">暂无数据</div>';
   }
 }
 
-// ── Update signal ──
+// ── Signal ──
 function updateSignal() {
-  const vals  = Object.values(scores);
+  var vals  = Object.values(scores);
   if (!vals.length) return;
-  const total = vals.reduce((a, b) => a + b, 0);
-  const max   = vals.length * 2;
-
-  let icon, name, cls, desc;
+  var total = vals.reduce(function(a, b) { return a + b; }, 0);
+  var max   = vals.length * 2;
+  var icon, name, cls, desc;
   if      (total >=  5) { icon = '📈'; name = '强多'; cls = 'sb-bull'; desc = '多数指标看多，动能较强'; }
   else if (total >=  2) { icon = '🔵'; name = '弱多'; cls = 'sb-bull'; desc = '偏多信号，可顺势轻仓'; }
-  else if (total <= -5) { icon = '📉'; name = '强空'; cls = 'sb-bear'; desc = '多数指标看空，注意回调风险'; }
+  else if (total <= -5) { icon = '📉'; name = '强空'; cls = 'sb-bear'; desc = '多数指标看空，注意风险'; }
   else if (total <= -2) { icon = '🟠'; name = '弱空'; cls = 'sb-bear'; desc = '偏空信号，谨慎做多'; }
   else                  { icon = '➡'; name = '中性'; cls = 'sb-neu';  desc = '信号混合，建议观望'; }
 
-  $('signal-icon').textContent = icon;
-  $('signal-score').textContent = (total > 0 ? '+' : '') + total;
-  $('signal-name').textContent  = name;
-  $('signal-desc').textContent  = `${desc}（${vals.length} 项指标）`;
-  $('signal-box').className     = 'signal-box ' + cls;
+  el('sigIco').textContent   = icon;
+  el('sigScore').textContent = (total > 0 ? '+' : '') + total;
+  el('sigName').textContent  = name;
+  el('sigDesc').textContent  = desc + '（' + vals.length + ' 项指标）';
+  el('sigBox').className     = 'sig-box ' + cls;
 
-  // Score track
-  const segs = [];
-  for (let i = -max; i <= max; i++) {
+  var segs = [];
+  for (var i = -max; i <= max; i++) {
     if (i === 0) continue;
-    let sc = 'score-seg';
-    if (i > 0 && total >= i) sc += ' seg-bull';
-    else if (i < 0 && total <= i) sc += ' seg-bear';
-    segs.push(`<div class="${sc}"></div>`);
+    var sc = 'seg';
+    if (i > 0 && total >= i) sc += ' bull';
+    else if (i < 0 && total <= i) sc += ' bear';
+    segs.push('<div class="' + sc + '"></div>');
   }
-  $('score-track').innerHTML = segs.join('');
-}
-
-// ── Badge helper ──
-function setBadge(id, text, cls) {
-  const el = $(id);
-  el.textContent = text;
-  el.className   = 'badge ' + cls;
-}
-
-// ── Main load ──
-async function loadAll() {
-  $('status-dot').classList.add('loading');
-  scores = {};
-  await Promise.all([loadCandles(), loadPublic(), loadProxy(), loadLiq()]);
-  updateSignal();
-  $('status-dot').classList.remove('loading');
-  $('refresh-label').textContent = '更新 ' + new Date().toLocaleTimeString('zh-CN');
-  if (timer) clearTimeout(timer);
-  timer = setTimeout(loadAll, 30000);
+  el('track').innerHTML = segs.join('');
 }
 
 // ── Search ──
 async function loadInsts() {
   try {
-    const d = await get('/api/v5/public/instruments?instType=SWAP', true);
-    if (d.code === '0') allInsts = d.data.filter(i => i.settleCcy === 'USDT').map(i => i.instId);
+    var d = await apiFetch('https://www.okx.com/api/v5/public/instruments?instType=SWAP');
+    if (d.code === '0') allInsts = d.data.filter(function(i) { return i.settleCcy === 'USDT'; }).map(function(i) { return i.instId; });
   } catch(e) {}
-  // fallback common symbols
-  if (!allInsts.length)
+  if (!allInsts.length) {
     allInsts = ['BTC-USDT-SWAP','ETH-USDT-SWAP','SOL-USDT-SWAP','BNB-USDT-SWAP',
                 'XRP-USDT-SWAP','DOGE-USDT-SWAP','ADA-USDT-SWAP','AVAX-USDT-SWAP',
-                'LINK-USDT-SWAP','DOT-USDT-SWAP','MATIC-USDT-SWAP','OP-USDT-SWAP',
-                'ARB-USDT-SWAP','SUI-USDT-SWAP','PEPE-USDT-SWAP'];
-}
-
-async function getOkx(path) {
-  const r = await fetch('https://www.okx.com' + path);
-  return r.json();
-}
-
-// override get for instruments
-async function get(url, direct) {
-  const r = await fetch(direct ? 'https://www.okx.com' + url : url);
-  if (!r.ok) throw new Error(r.status);
-  return r.json();
+                'LINK-USDT-SWAP','DOT-USDT-SWAP','OP-USDT-SWAP','ARB-USDT-SWAP',
+                'SUI-USDT-SWAP','PEPE-USDT-SWAP','WIF-USDT-SWAP'];
+  }
 }
 
 function setupSearch() {
-  const inp  = $('search-input');
-  const drop = $('search-dropdown');
-  inp.value  = instId;
+  var inp  = el('sinput');
+  var dd   = el('sdd');
+  inp.value = instId;
 
-  inp.addEventListener('input', () => {
-    const q = inp.value.trim().toUpperCase();
-    if (!q) { drop.style.display = 'none'; return; }
-    const hits = allInsts.filter(i => i.includes(q)).slice(0, 20);
-    if (!hits.length) { drop.style.display = 'none'; return; }
-    drop.innerHTML = hits.map(h =>
-      `<div class="search-item" data-id="${h}">${h}</div>`
-    ).join('');
-    drop.style.display = 'block';
-    drop.querySelectorAll('.search-item').forEach(el => {
-      el.addEventListener('click', () => {
-        instId = el.dataset.id;
+  inp.addEventListener('input', function() {
+    var q = inp.value.trim().toUpperCase();
+    if (!q) { dd.style.display = 'none'; return; }
+    var hits = allInsts.filter(function(i) { return i.indexOf(q) !== -1; }).slice(0, 20);
+    if (!hits.length) { dd.style.display = 'none'; return; }
+    dd.innerHTML = hits.map(function(h) { return '<div class="dd-item" data-id="' + h + '">' + h + '</div>'; }).join('');
+    dd.style.display = 'block';
+    dd.querySelectorAll('.dd-item').forEach(function(e) {
+      e.addEventListener('click', function() {
+        instId = e.dataset.id;
         inp.value = instId;
-        drop.style.display = 'none';
+        dd.style.display = 'none';
         loadAll();
       });
     });
   });
 
-  inp.addEventListener('keydown', e => {
+  inp.addEventListener('keydown', function(e) {
     if (e.key === 'Enter') {
-      const first = drop.querySelector('.search-item');
-      if (first) { first.click(); }
+      var first = dd.querySelector('.dd-item');
+      if (first) first.click();
     }
-    if (e.key === 'Escape') drop.style.display = 'none';
+    if (e.key === 'Escape') dd.style.display = 'none';
   });
 
-  document.addEventListener('click', e => {
-    if (!e.target.closest('.search-wrap')) drop.style.display = 'none';
+  document.addEventListener('click', function(e) {
+    if (!e.target.closest('.search-wrap')) dd.style.display = 'none';
   });
 }
 
 function setupTf() {
-  document.querySelectorAll('.tf-btn').forEach(btn => {
-    btn.addEventListener('click', () => {
-      document.querySelectorAll('.tf-btn').forEach(b => b.classList.remove('active'));
+  document.querySelectorAll('.tf-btn').forEach(function(btn) {
+    btn.addEventListener('click', function() {
+      document.querySelectorAll('.tf-btn').forEach(function(b) { b.classList.remove('active'); });
       btn.classList.add('active');
       tf = btn.dataset.tf;
       loadAll();
@@ -697,222 +498,24 @@ function setupTf() {
   });
 }
 
+// ── Main ──
+async function loadAll() {
+  el('dot').classList.add('spin');
+  scores = {};
+  await Promise.all([loadCandles(), loadPublic(), loadProxy(), loadLiq()]);
+  updateSignal();
+  el('dot').classList.remove('spin');
+  el('rlbl').textContent = '更新 ' + new Date().toLocaleTimeString('zh-CN');
+  if (timer) clearTimeout(timer);
+  timer = setTimeout(loadAll, 30000);
+}
+
 // ── Init ──
-async function init() {
+(async function() {
   initChart();
   setupSearch();
   setupTf();
   await loadInsts();
-  await loadAll();
-}
-
-// fix get function collision
-const _fetch = window.fetch;
-window.fetch = _fetch;
-
-// redefine get cleanly
-window.get = async function(url) {
-  const r = await _fetch(url);
-  if (!r.ok) throw new Error(r.status);
-  return r.json();
-};
-
-// patch loadInsts & loadPublic to use full URL
-(async () => {
-  initChart();
-  setupSearch();
-  setupTf();
-
-  // Load instruments
-  try {
-    const d = await window.get('https://www.okx.com/api/v5/public/instruments?instType=SWAP');
-    if (d.code === '0')
-      allInsts = d.data.filter(i => i.settleCcy === 'USDT').map(i => i.instId);
-  } catch(e) {
-    allInsts = ['BTC-USDT-SWAP','ETH-USDT-SWAP','SOL-USDT-SWAP','BNB-USDT-SWAP',
-                'XRP-USDT-SWAP','DOGE-USDT-SWAP','ADA-USDT-SWAP','AVAX-USDT-SWAP',
-                'LINK-USDT-SWAP','DOT-USDT-SWAP','MATIC-USDT-SWAP','OP-USDT-SWAP',
-                'ARB-USDT-SWAP','SUI-USDT-SWAP','PEPE-USDT-SWAP'];
-  }
-
-  // Override API helpers to use full URL
-  window._get = async (url) => {
-    const r = await _fetch(url);
-    if (!r.ok) throw new Error(r.status);
-    return r.json();
-  };
-
-  loadCandles  = async () => {
-    try {
-      const d = await window._get(`https://www.okx.com/api/v5/market/candles?instId=${instId}&bar=${tf}&limit=300`);
-      if (d.code !== '0') return;
-      const data = d.data.reverse().map(c => ({
-        time:  Math.floor(parseInt(c[0]) / 1000),
-        open:  parseFloat(c[1]),
-        high:  parseFloat(c[2]),
-        low:   parseFloat(c[3]),
-        close: parseFloat(c[4]),
-      }));
-      candles.setData(data);
-      chart.timeScale().fitContent();
-      const last  = data[data.length - 1];
-      const first = data[0];
-      lastClose   = last.close;
-      const chg   = ((last.close - first.open) / first.open * 100).toFixed(2);
-      $('price-main').textContent = fmtPx(last.close);
-      $('price-chg').textContent  = (chg >= 0 ? '+' : '') + chg + '%';
-      $('price-chg').style.color  = chg >= 0 ? '#0ecb81' : '#f6465d';
-      $('inst-tag').textContent   = instId;
-    } catch(e) { console.warn('candles:', e); }
-  };
-
-  loadPublic = async () => {
-    try {
-      const [frD, mkD, idxD, oiD] = await Promise.all([
-        window._get(`https://www.okx.com/api/v5/public/funding-rate?instId=${instId}`),
-        window._get(`https://www.okx.com/api/v5/public/mark-price?instType=SWAP&instId=${instId}`),
-        window._get(`https://www.okx.com/api/v5/market/index-tickers?instId=${getIdxId(instId)}`),
-        window._get(`https://www.okx.com/api/v5/public/open-interest?instId=${instId}`),
-      ]);
-
-      if (frD.code === '0' && frD.data[0]) {
-        const fr     = parseFloat(frD.data[0].fundingRate) * 100;
-        const frNext = parseFloat(frD.data[0].nextFundingRate) * 100;
-        const nextTs = parseInt(frD.data[0].nextFundingTime);
-        const mins   = Math.max(0, Math.round((nextTs - Date.now()) / 60000));
-        const hhmm   = mins > 60 ? `${Math.floor(mins/60)}h ${mins%60}m` : `${mins}m`;
-        $('fr-val').textContent      = fr.toFixed(4) + '%';
-        $('fr-next-val').textContent = frNext.toFixed(4) + '%';
-        $('fr-next-time').textContent = hhmm + ' 后';
-        let sc = 0, lbl = '中性', cls = 'b-neu';
-        if      (fr >  0.1)  { sc = -2; lbl = '多头过热'; cls = 'b-bear'; }
-        else if (fr >  0.05) { sc = -1; lbl = '偏高';     cls = 'b-warn'; }
-        else if (fr < -0.1)  { sc =  2; lbl = '空头拥挤'; cls = 'b-bull'; }
-        else if (fr < -0.05) { sc =  1; lbl = '偏低';     cls = 'b-bull'; }
-        setBadge('fr-badge', lbl, cls);
-        scores.funding = sc;
-      }
-
-      if (mkD.code === '0' && mkD.data[0]) {
-        const mark = parseFloat(mkD.data[0].markPx);
-        $('mark-px').textContent = fmtPx(mark);
-        if (idxD.code === '0' && idxD.data[0]) {
-          const idx   = parseFloat(idxD.data[0].idxPx);
-          const basis = ((mark - idx) / idx * 100);
-          $('idx-px').textContent    = fmtPx(idx);
-          $('basis-val').textContent = basis.toFixed(4) + '%';
-          let bLbl = '中性', bCls = 'b-neu';
-          if (basis >  0.1) { bLbl = '期货溢价'; bCls = 'b-bull'; }
-          else if (basis < -0.1) { bLbl = '期货贴水'; bCls = 'b-bear'; }
-          setBadge('basis-badge', bLbl, bCls);
-        }
-      }
-
-      if (oiD.code === '0' && oiD.data[0]) {
-        const oiCcy = parseFloat(oiD.data[0].oiCcy);
-        const oiUsd = lastClose > 0 ? oiCcy * lastClose : 0;
-        const ccy   = getCcy(instId);
-        if (oiUsd > 1e9)      $('oi-val').textContent = '$' + (oiUsd/1e9).toFixed(2) + 'B';
-        else if (oiUsd > 1e6) $('oi-val').textContent = '$' + (oiUsd/1e6).toFixed(1) + 'M';
-        else                  $('oi-val').textContent = oiCcy.toFixed(2) + ' ' + ccy;
-      }
-    } catch(e) { console.warn('public:', e); }
-  };
-
-  loadProxy = async () => {
-    if (!workerOk) {
-      $('config-banner').style.display = 'block';
-      ['ls-retail-val','ls-top-val','taker-val'].forEach(id => $(id).textContent = 'N/A');
-      ['ls-retail-badge','ls-top-badge','taker-badge'].forEach(id => setBadge(id, '需配置 Worker', 'b-warn'));
-      return;
-    }
-    const ccy = getCcy(instId);
-    try {
-      const [retD, topD, tkD] = await Promise.all([
-        window._get(`${WORKER_URL}/api/v5/rubik/stat/contracts/long-short-account-ratio?ccy=${ccy}&period=${tf}&limit=1`),
-        window._get(`${WORKER_URL}/api/v5/rubik/stat/contracts/long-short-account-ratio-contract-top-trader?instId=${instId}&period=${tf}&limit=1`),
-        window._get(`${WORKER_URL}/api/v5/rubik/stat/taker-volume?ccy=${ccy}&instType=CONTRACTS&period=${tf}&limit=1`),
-      ]);
-      if (retD.code === '0' && retD.data[0]) {
-        const r = parseFloat(retD.data[0][1]);
-        $('ls-retail-val').textContent = r.toFixed(2);
-        let sc = 0, lbl = '中性', cls = 'b-neu';
-        if      (r > 2.0)  { sc = -2; lbl = '多头过多'; cls = 'b-bear'; }
-        else if (r > 1.5)  { sc = -1; lbl = '偏多头';   cls = 'b-warn'; }
-        else if (r < 0.5)  { sc =  2; lbl = '空头过多'; cls = 'b-bull'; }
-        else if (r < 0.67) { sc =  1; lbl = '偏空头';   cls = 'b-bull'; }
-        setBadge('ls-retail-badge', lbl, cls);
-        scores.retailLS = sc;
-      }
-      if (topD.code === '0' && topD.data[0]) {
-        const r = parseFloat(topD.data[0][1]);
-        $('ls-top-val').textContent = r.toFixed(2);
-        let sc = 0, lbl = '中性', cls = 'b-neu';
-        if      (r > 1.5)  { sc =  2; lbl = '大户偏多'; cls = 'b-bull'; }
-        else if (r > 1.2)  { sc =  1; lbl = '略偏多';   cls = 'b-bull'; }
-        else if (r < 0.67) { sc = -2; lbl = '大户偏空'; cls = 'b-bear'; }
-        else if (r < 0.83) { sc = -1; lbl = '略偏空';   cls = 'b-warn'; }
-        setBadge('ls-top-badge', lbl, cls);
-        scores.topLS = sc;
-      }
-      if (tkD.code === '0' && tkD.data[0]) {
-        const buyV = parseFloat(tkD.data[0][1]);
-        const selV = parseFloat(tkD.data[0][2]);
-        const tot  = buyV + selV;
-        const pct  = tot > 0 ? buyV / tot * 100 : 50;
-        $('taker-val').textContent = pct.toFixed(1) + '%';
-        let sc = 0, lbl = '中性', cls = 'b-neu';
-        if      (pct > 60) { sc =  2; lbl = '买盘强势'; cls = 'b-bull'; }
-        else if (pct > 55) { sc =  1; lbl = '买盘偏多'; cls = 'b-bull'; }
-        else if (pct < 40) { sc = -2; lbl = '卖盘强势'; cls = 'b-bear'; }
-        else if (pct < 45) { sc = -1; lbl = '卖盘偏多'; cls = 'b-warn'; }
-        setBadge('taker-badge', lbl, cls);
-        scores.taker = sc;
-      }
-    } catch(e) {
-      console.warn('proxy:', e);
-      ['ls-retail-val','ls-top-val','taker-val'].forEach(id => $(id).textContent = '--');
-    }
-  };
-
-  loadLiq = async () => {
-    try {
-      const d = await window._get(
-        `https://www.okx.com/api/v5/public/liquidation-orders?instType=SWAP&instId=${instId}&state=filled&limit=10`
-      );
-      if (d.code !== '0' || !d.data || !d.data[0] || !d.data[0].details || !d.data[0].details.length) {
-        $('liq-list').innerHTML = '<div class="liq-empty">暂无近期爆仓</div>';
-        return;
-      }
-      $('liq-list').innerHTML = d.data[0].details.slice(0, 8).map(o => {
-        const isLong = o.side === 'sell';
-        const col  = isLong ? '#f6465d' : '#0ecb81';
-        const lbl  = isLong ? '多头爆仓' : '空头爆仓';
-        const t    = new Date(parseInt(o.ts));
-        const time = t.getHours().toString().padStart(2,'0') + ':' + t.getMinutes().toString().padStart(2,'0');
-        return `<div class="liq-row">
-          <span class="liq-side" style="color:${col}">${lbl}</span>
-          <span style="color:var(--text2)">$${fmtPx(o.bkPx)}</span>
-          <span style="color:var(--text2)">${parseFloat(o.sz).toFixed(0)} 张</span>
-          <span style="color:var(--text3)">${time}</span>
-        </div>`;
-      }).join('');
-    } catch(e) {
-      $('liq-list').innerHTML = '<div class="liq-empty">暂无数据</div>';
-    }
-  };
-
-  loadAll = async () => {
-    $('status-dot').classList.add('loading');
-    scores = {};
-    await Promise.all([loadCandles(), loadPublic(), loadProxy(), loadLiq()]);
-    updateSignal();
-    $('status-dot').classList.remove('loading');
-    $('refresh-label').textContent = '更新 ' + new Date().toLocaleTimeString('zh-CN');
-    if (timer) clearTimeout(timer);
-    timer = setTimeout(loadAll, 30000);
-  };
-
   await loadAll();
 })();
 </script>

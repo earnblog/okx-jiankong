@@ -6,108 +6,70 @@
 <title>OKX 市场监控</title>
 <script src="https://unpkg.com/lightweight-charts@4.1.1/dist/lightweight-charts.standalone.production.js"></script>
 <style>
-:root {
-  --bg:    #0e0f11;
-  --bg2:   #161a1d;
-  --bg3:   #1e2329;
-  --bd:    #2b2f36;
-  --t1:    #eaecef;
-  --t2:    #848e9c;
-  --t3:    #5e6673;
-  --green: #0ecb81;
-  --red:   #f6465d;
-  --blue:  #1890ff;
-  --amber: #f0b90b;
-}
-* { box-sizing: border-box; margin: 0; padding: 0; }
-html, body { height: 100%; overflow: hidden; }
-body { font-family: -apple-system, 'PingFang SC', 'Microsoft YaHei', sans-serif;
-       background: var(--bg); color: var(--t1); font-size: 13px; }
+:root{--bg:#0e0f11;--bg2:#161a1d;--bg3:#1e2329;--bd:#2b2f36;--t1:#eaecef;--t2:#848e9c;--t3:#5e6673;--green:#0ecb81;--red:#f6465d;--blue:#1890ff;--amber:#f0b90b;}
+*{box-sizing:border-box;margin:0;padding:0;}
+html,body{height:100%;overflow:hidden;}
+body{font-family:-apple-system,"PingFang SC","Microsoft YaHei",sans-serif;background:var(--bg);color:var(--t1);font-size:13px;}
 
-.header {
-  height: 52px; background: var(--bg2); border-bottom: 1px solid var(--bd);
-  display: flex; align-items: center; padding: 0 16px; gap: 12px;
-}
-.logo { font-size: 15px; font-weight: 600; }
-.logo span { color: var(--blue); }
+.header{height:52px;background:var(--bg2);border-bottom:1px solid var(--bd);display:flex;align-items:center;padding:0 16px;gap:12px;}
+.logo{font-size:15px;font-weight:600;} .logo span{color:var(--blue);}
+.search-wrap{position:relative;}
+.sinput{background:var(--bg3);border:1px solid var(--bd);border-radius:4px;padding:6px 12px;color:var(--t1);font-size:13px;width:200px;outline:none;}
+.sinput:focus{border-color:var(--blue);}
+.sdd{position:absolute;top:calc(100% + 4px);left:0;width:240px;background:var(--bg2);border:1px solid var(--bd);border-radius:4px;max-height:260px;overflow-y:auto;z-index:200;display:none;}
+.ddi{padding:8px 12px;cursor:pointer;color:var(--t2);} .ddi:hover{background:var(--bg3);color:var(--t1);}
+.tf-group{display:flex;gap:4px;}
+.tf-btn{padding:5px 11px;border-radius:4px;border:1px solid var(--bd);background:transparent;color:var(--t2);cursor:pointer;font-size:12px;}
+.tf-btn:hover{border-color:var(--blue);} .tf-btn.active{background:var(--blue);border-color:var(--blue);color:#fff;}
+.hdr-right{margin-left:auto;display:flex;align-items:center;gap:8px;}
+.dot{width:7px;height:7px;border-radius:50%;background:var(--green);}
+.dot.spin{background:var(--amber);animation:pulse 1s infinite;}
+@keyframes pulse{0%,100%{opacity:1}50%{opacity:.3}}
+.rlbl{font-size:11px;color:var(--t3);}
 
-.search-wrap { position: relative; }
-.search-input {
-  background: var(--bg3); border: 1px solid var(--bd); border-radius: 4px;
-  padding: 6px 12px; color: var(--t1); font-size: 13px; width: 200px; outline: none;
-}
-.search-input:focus { border-color: var(--blue); }
-.search-dd {
-  position: absolute; top: calc(100% + 4px); left: 0; width: 240px;
-  background: var(--bg2); border: 1px solid var(--bd); border-radius: 4px;
-  max-height: 260px; overflow-y: auto; z-index: 200; display: none;
-}
-.dd-item { padding: 8px 12px; cursor: pointer; color: var(--t2); }
-.dd-item:hover { background: var(--bg3); color: var(--t1); }
+.main{display:flex;height:calc(100vh - 52px);}
+.chart-sec{flex:1;min-width:0;display:flex;flex-direction:column;border-right:1px solid var(--bd);}
+.chart-info{padding:8px 16px;border-bottom:1px solid var(--bd);display:flex;align-items:baseline;gap:10px;flex-shrink:0;}
+.pxmain{font-size:22px;font-weight:600;} .pxchg{font-size:13px;} .itag{font-size:11px;color:var(--t3);}
 
-.tf-group { display: flex; gap: 4px; }
-.tf-btn {
-  padding: 5px 11px; border-radius: 4px; border: 1px solid var(--bd);
-  background: transparent; color: var(--t2); cursor: pointer; font-size: 12px;
-}
-.tf-btn:hover { border-color: var(--blue); color: var(--t1); }
-.tf-btn.active { background: var(--blue); border-color: var(--blue); color: #fff; }
+.ind-bar{padding:0 10px;height:34px;border-bottom:1px solid var(--bd);display:flex;align-items:center;gap:4px;flex-shrink:0;overflow-x:auto;}
+.ind-bar::-webkit-scrollbar{height:0;}
+.ibtn{padding:3px 7px;border-radius:3px;border:1px solid var(--bd);background:transparent;cursor:pointer;font-size:11px;color:var(--t3);white-space:nowrap;transition:all .15s;}
+.ibtn:hover{color:var(--t1);}
+.ibtn.on{color:#fff;}
+.ibtn.e6.on{border-color:#3b82f6;background:rgba(59,130,246,.2);color:#3b82f6;}
+.ibtn.e13.on{border-color:#f59e0b;background:rgba(245,158,11,.2);color:#f59e0b;}
+.ibtn.e20.on{border-color:#10b981;background:rgba(16,185,129,.2);color:#10b981;}
+.ibtn.e24.on{border-color:#ec4899;background:rgba(236,72,153,.2);color:#ec4899;}
+.ibtn.e52.on{border-color:#8b5cf6;background:rgba(139,92,246,.2);color:#8b5cf6;}
+.ibtn.e200.on{border-color:#ef4444;background:rgba(239,68,68,.2);color:#ef4444;}
+.ibtn.bb.on{border-color:#60a5fa;background:rgba(96,165,250,.2);color:#60a5fa;}
+.ibtn.sub.on{border-color:var(--blue);background:rgba(24,144,255,.15);color:var(--blue);}
+.ibar-sep{width:1px;height:18px;background:var(--bd);flex-shrink:0;margin:0 2px;}
 
-.hdr-right { margin-left: auto; display: flex; align-items: center; gap: 8px; }
-.dot { width: 7px; height: 7px; border-radius: 50%; background: var(--green); }
-.dot.spin { background: var(--amber); animation: pulse 1s infinite; }
-@keyframes pulse { 0%,100%{opacity:1} 50%{opacity:0.3} }
-.ref-lbl { font-size: 11px; color: var(--t3); }
+.charts-col{flex:1;display:flex;flex-direction:column;min-height:0;overflow:hidden;}
+.cwrap{position:relative;overflow:hidden;}
+#mainWrap{flex:1;min-height:160px;}
+.sub-wrap{flex:0 0 auto;border-top:1px solid var(--bd);}
+.slabel{font-size:10px;color:var(--t3);padding:3px 8px;position:absolute;top:0;left:0;z-index:10;pointer-events:none;background:rgba(14,15,17,.7);}
 
-.main { display: flex; height: calc(100vh - 52px); }
-
-.chart-sec { flex: 1; min-width: 0; display: flex; flex-direction: column; border-right: 1px solid var(--bd); }
-.chart-info { padding: 10px 16px; border-bottom: 1px solid var(--bd); display: flex; align-items: baseline; gap: 10px; flex-shrink: 0; }
-.px-main { font-size: 22px; font-weight: 600; }
-.px-chg  { font-size: 13px; }
-.inst-tag { font-size: 11px; color: var(--t3); }
-.chart-wrap { flex: 1; min-height: 0; position: relative; }
-.chart-ph { position: absolute; inset: 0; display: flex; align-items: center; justify-content: center; color: var(--t2); gap: 8px; }
-.spinner { width: 18px; height: 18px; border: 2px solid var(--bd); border-top-color: var(--blue); border-radius: 50%; animation: spin 0.8s linear infinite; }
-@keyframes spin { to { transform: rotate(360deg); } }
-
-.panel { width: 310px; flex-shrink: 0; overflow-y: auto; }
-.panel::-webkit-scrollbar { width: 3px; }
-.panel::-webkit-scrollbar-thumb { background: var(--bd); }
-
-.pblock { border-bottom: 1px solid var(--bd); padding: 14px; }
-.blk-title { font-size: 10px; color: var(--t3); text-transform: uppercase; letter-spacing: 0.07em; margin-bottom: 10px; }
-
-.sig-box { display: flex; align-items: center; gap: 12px; padding: 12px; border-radius: 6px; border: 1px solid transparent; margin-bottom: 8px; }
-.sb-bull { background: rgba(14,203,129,0.08); border-color: rgba(14,203,129,0.25); }
-.sb-bear { background: rgba(246,70,93,0.08);  border-color: rgba(246,70,93,0.25); }
-.sb-neu  { background: rgba(132,142,156,0.07); border-color: rgba(132,142,156,0.18); }
-.sig-ico   { font-size: 26px; line-height: 1; }
-.sig-score { font-size: 20px; font-weight: 600; }
-.sig-name  { font-size: 13px; font-weight: 500; margin-left: 4px; }
-.sig-desc  { font-size: 11px; color: var(--t2); margin-top: 3px; }
-
-.track { display: flex; gap: 3px; }
-.seg { flex: 1; height: 4px; border-radius: 2px; background: var(--bg3); }
-.seg.bull { background: var(--green); }
-.seg.bear { background: var(--red); }
-
-.irow { display: flex; justify-content: space-between; align-items: center; padding: 7px 0; border-bottom: 0.5px solid var(--bd); }
-.irow:last-child { border-bottom: none; }
-.ilbl { color: var(--t2); font-size: 12px; }
-.iright { display: flex; align-items: center; gap: 7px; }
-.ival { font-size: 12px; font-weight: 500; }
-.badge { font-size: 10px; padding: 2px 6px; border-radius: 3px; white-space: nowrap; }
-.b-bull { background: rgba(14,203,129,0.14); color: var(--green); }
-.b-bear { background: rgba(246,70,93,0.14);  color: var(--red); }
-.b-neu  { background: rgba(132,142,156,0.12); color: var(--t2); }
-.b-warn { background: rgba(240,185,11,0.14);  color: var(--amber); }
-
-.liq-row { display: flex; justify-content: space-between; padding: 5px 0; font-size: 11px; border-bottom: 0.5px solid var(--bd); }
-.liq-row:last-child { border-bottom: none; }
-.liq-empty { font-size: 11px; color: var(--t3); }
-
-.warn-bar { background: rgba(240,185,11,0.1); border: 1px solid rgba(240,185,11,0.3); border-radius: 4px; padding: 8px 12px; margin: 10px 14px 0; font-size: 11px; color: var(--amber); line-height: 1.5; display: none; }
+.panel{width:310px;flex-shrink:0;overflow-y:auto;}
+.panel::-webkit-scrollbar{width:3px;} .panel::-webkit-scrollbar-thumb{background:var(--bd);}
+.pblock{border-bottom:1px solid var(--bd);padding:14px;}
+.btitle{font-size:10px;color:var(--t3);text-transform:uppercase;letter-spacing:.07em;margin-bottom:10px;}
+.sigbox{display:flex;align-items:center;gap:12px;padding:12px;border-radius:6px;border:1px solid transparent;margin-bottom:8px;}
+.sb-bull{background:rgba(14,203,129,.08);border-color:rgba(14,203,129,.25);}
+.sb-bear{background:rgba(246,70,93,.08);border-color:rgba(246,70,93,.25);}
+.sb-neu{background:rgba(132,142,156,.07);border-color:rgba(132,142,156,.18);}
+.sigico{font-size:26px;line-height:1;} .sigsco{font-size:20px;font-weight:600;} .signm{font-size:13px;font-weight:500;margin-left:4px;} .sigdsc{font-size:11px;color:var(--t2);margin-top:3px;}
+.track{display:flex;gap:3px;} .seg{flex:1;height:4px;border-radius:2px;background:var(--bg3);} .seg.bull{background:var(--green);} .seg.bear{background:var(--red);}
+.irow{display:flex;justify-content:space-between;align-items:center;padding:7px 0;border-bottom:.5px solid var(--bd);} .irow:last-child{border-bottom:none;}
+.ilbl{color:var(--t2);font-size:12px;} .iright{display:flex;align-items:center;gap:7px;} .ival{font-size:12px;font-weight:500;}
+.badge{font-size:10px;padding:2px 6px;border-radius:3px;white-space:nowrap;}
+.b-bull{background:rgba(14,203,129,.14);color:var(--green);} .b-bear{background:rgba(246,70,93,.14);color:var(--red);} .b-neu{background:rgba(132,142,156,.12);color:var(--t2);} .b-warn{background:rgba(240,185,11,.14);color:var(--amber);}
+.liqrow{display:flex;justify-content:space-between;padding:5px 0;font-size:11px;border-bottom:.5px solid var(--bd);} .liqrow:last-child{border-bottom:none;}
+.liqmt{font-size:11px;color:var(--t3);}
+.wbar{background:rgba(240,185,11,.1);border:1px solid rgba(240,185,11,.3);border-radius:4px;padding:8px 12px;margin:10px 14px 0;font-size:11px;color:var(--amber);line-height:1.5;display:none;}
 </style>
 </head>
 <body>
@@ -115,8 +77,8 @@ body { font-family: -apple-system, 'PingFang SC', 'Microsoft YaHei', sans-serif;
 <div class="header">
   <div class="logo">OKX <span>Monitor</span></div>
   <div class="search-wrap">
-    <input class="search-input" id="sinput" placeholder="搜索合约，如 BTC-USDT-SWAP" autocomplete="off" />
-    <div class="search-dd" id="sdd"></div>
+    <input class="sinput" id="sinput" placeholder="搜索合约 BTC-USDT-SWAP" autocomplete="off" />
+    <div class="sdd" id="sdd"></div>
   </div>
   <div class="tf-group">
     <button class="tf-btn" data-tf="5m">5M</button>
@@ -126,397 +88,465 @@ body { font-family: -apple-system, 'PingFang SC', 'Microsoft YaHei', sans-serif;
   </div>
   <div class="hdr-right">
     <div class="dot spin" id="dot"></div>
-    <span class="ref-lbl" id="rlbl">加载中...</span>
+    <span class="rlbl" id="rlbl">加载中...</span>
   </div>
 </div>
 
 <div class="main">
   <div class="chart-sec">
     <div class="chart-info">
-      <span class="px-main" id="pxMain">--</span>
-      <span class="px-chg"  id="pxChg">--</span>
-      <span class="inst-tag" id="instTag">BTC-USDT-SWAP</span>
+      <span class="pxmain" id="pxMain">--</span>
+      <span class="pxchg"  id="pxChg">--</span>
+      <span class="itag"   id="itag">BTC-USDT-SWAP</span>
     </div>
-    <div class="chart-wrap" id="chartWrap">
-      <div class="chart-ph" id="chartPh"><div class="spinner"></div> 正在加载 K 线...</div>
+    <div class="ind-bar">
+      <button class="ibtn e6 on"   data-ind="ema6"  >EMA 6</button>
+      <button class="ibtn e13 on"  data-ind="ema13" >EMA 13</button>
+      <button class="ibtn e20 on"  data-ind="ema20" >EMA 20</button>
+      <button class="ibtn e24"     data-ind="ema24" >EMA 24</button>
+      <button class="ibtn e52 on"  data-ind="ema52" >EMA 52</button>
+      <button class="ibtn e200 on" data-ind="ema200">EMA 200</button>
+      <button class="ibtn bb"      data-ind="bb"    >BB</button>
+      <div class="ibar-sep"></div>
+      <button class="ibtn sub on"  data-sub="macd">MACD</button>
+      <button class="ibtn sub on"  data-sub="rsi" >RSI</button>
+      <button class="ibtn sub"     data-sub="cvd" >CVD</button>
+      <button class="ibtn sub"     data-sub="oi"  >持仓 OI</button>
+    </div>
+    <div class="charts-col" id="chartsCol">
+      <div class="cwrap" id="mainWrap"></div>
+      <div class="cwrap sub-wrap" id="macdWrap" style="height:110px"><span class="slabel">MACD</span></div>
+      <div class="cwrap sub-wrap" id="rsiWrap"  style="height:90px" ><span class="slabel">RSI 14</span></div>
+      <div class="cwrap sub-wrap" id="cvdWrap"  style="height:90px;display:none"><span class="slabel">CVD</span></div>
+      <div class="cwrap sub-wrap" id="oiWrap"   style="height:90px;display:none"><span class="slabel">持仓 OI</span></div>
     </div>
   </div>
 
   <div class="panel">
-    <div class="warn-bar" id="warnBar">⚠ 多空比 / Taker 需配置 Cloudflare Worker<br>请在 index.html 顶部填写 WORKER_URL</div>
-
+    <div class="wbar" id="wbar">⚠ 多空比/Taker/OI图需配置 Worker</div>
     <div class="pblock">
-      <div class="blk-title">综合信号</div>
-      <div class="sig-box sb-neu" id="sigBox">
-        <div class="sig-ico" id="sigIco">⏳</div>
+      <div class="btitle">综合信号</div>
+      <div class="sigbox sb-neu" id="sigBox">
+        <div class="sigico" id="sigIco">⏳</div>
         <div>
-          <div><span class="sig-score" id="sigScore">--</span><span class="sig-name" id="sigName">加载中</span></div>
-          <div class="sig-desc" id="sigDesc">正在获取数据...</div>
+          <div><span class="sigsco" id="sigSco">--</span><span class="signm" id="sigNm">加载中</span></div>
+          <div class="sigdsc" id="sigDsc">正在获取数据...</div>
         </div>
       </div>
       <div class="track" id="track"></div>
     </div>
-
     <div class="pblock">
-      <div class="blk-title">资金 & 价差</div>
-      <div class="irow"><span class="ilbl">资金费率（当前）</span><div class="iright"><span class="ival" id="frVal">--</span><span class="badge b-neu" id="frBadge">--</span></div></div>
+      <div class="btitle">资金 & 价差</div>
+      <div class="irow"><span class="ilbl">资金费率（当前）</span><div class="iright"><span class="ival" id="frVal">--</span><span class="badge b-neu" id="frB">--</span></div></div>
       <div class="irow"><span class="ilbl">下次结算</span><span class="ival" id="frTime">--</span></div>
       <div class="irow"><span class="ilbl">预测费率</span><span class="ival" id="frNext">--</span></div>
       <div class="irow"><span class="ilbl">标记价格</span><span class="ival" id="markPx">--</span></div>
       <div class="irow"><span class="ilbl">指数价格</span><span class="ival" id="idxPx">--</span></div>
-      <div class="irow"><span class="ilbl">基差（Basis）</span><div class="iright"><span class="ival" id="basisVal">--</span><span class="badge b-neu" id="basisBadge">--</span></div></div>
+      <div class="irow"><span class="ilbl">基差（Basis）</span><div class="iright"><span class="ival" id="basisVal">--</span><span class="badge b-neu" id="basisB">--</span></div></div>
     </div>
-
     <div class="pblock">
-      <div class="blk-title">持仓情绪</div>
+      <div class="btitle">持仓情绪</div>
       <div class="irow"><span class="ilbl">未平仓合约</span><span class="ival" id="oiVal">--</span></div>
-      <div class="irow"><span class="ilbl">散户多空比</span><div class="iright"><span class="ival" id="lsRetail">--</span><span class="badge b-neu" id="lsRetailB">--</span></div></div>
-      <div class="irow"><span class="ilbl">大户多空比</span><div class="iright"><span class="ival" id="lsTop">--</span><span class="badge b-neu" id="lsTopB">--</span></div></div>
-      <div class="irow"><span class="ilbl">Taker 买入占比</span><div class="iright"><span class="ival" id="takerVal">--</span><span class="badge b-neu" id="takerB">--</span></div></div>
+      <div class="irow"><span class="ilbl">散户多空比</span><div class="iright"><span class="ival" id="lsR">--</span><span class="badge b-neu" id="lsRB">--</span></div></div>
+      <div class="irow"><span class="ilbl">大户多空比</span><div class="iright"><span class="ival" id="lsT">--</span><span class="badge b-neu" id="lsTB">--</span></div></div>
+      <div class="irow"><span class="ilbl">Taker 买入占比</span><div class="iright"><span class="ival" id="tkVal">--</span><span class="badge b-neu" id="tkB">--</span></div></div>
     </div>
-
     <div class="pblock">
-      <div class="blk-title">近期大额爆仓</div>
-      <div id="liqList"><div class="liq-empty">加载中...</div></div>
+      <div class="btitle">近期大额爆仓</div>
+      <div id="liqList"><div class="liqmt">加载中...</div></div>
     </div>
   </div>
 </div>
 
 <script>
-// ============================================================
-// 配置：把下面替换成你的 Cloudflare Worker 地址
-// ============================================================
 var WORKER_URL = 'https://okx-proxy.movocardnow.workers.dev';
-// ============================================================
 
-var instId   = 'BTC-USDT-SWAP';
-var tf       = '1H';
-var chart    = null;
-var series   = null;
+var instId = 'BTC-USDT-SWAP';
+var tf = '1H';
+var candleData = [];
+var CH = {};
+var SR = {};
+var syncing = false;
+var timer = null;
+var scores = {};
+var lastPx = 0;
 var allInsts = [];
-var scores   = {};
-var timer    = null;
-var lastPx   = 0;
 var workerOk = WORKER_URL.indexOf('YOUR_WORKER') === -1;
+var vis = {ema6:true,ema13:true,ema20:true,ema24:false,ema52:true,ema200:true,bb:false,macd:true,rsi:true,cvd:false,oi:false};
+var oldestTs = 0;
+var loadingMore = false;
+var EMA_COL = {ema6:'#3b82f6',ema13:'#f59e0b',ema20:'#10b981',ema24:'#ec4899',ema52:'#8b5cf6',ema200:'#ef4444'};
+var EMA_PER = {ema6:6,ema13:13,ema20:20,ema24:24,ema52:52,ema200:200};
 
-function el(id) { return document.getElementById(id); }
+function el(id){return document.getElementById(id);}
+function fmtPx(n){var v=parseFloat(n);if(isNaN(v))return'--';if(v>=1000)return v.toLocaleString('zh-CN',{maximumFractionDigits:2});if(v>=1)return v.toFixed(4);return v.toFixed(6);}
+function bdg(id,txt,cls){var e=el(id);e.textContent=txt;e.className='badge '+cls;}
+function getCcy(id){return id.split('-')[0];}
+function getIdx(id){var p=id.split('-');return p[0]+'-'+p[1];}
+async function api(url){var r=await fetch(url);if(!r.ok)throw new Error(r.status);return r.json();}
 
-function fmtPx(n) {
-  var v = parseFloat(n);
-  if (isNaN(v)) return '--';
-  if (v >= 1000) return v.toLocaleString('zh-CN', {maximumFractionDigits: 2});
-  if (v >= 1)    return v.toFixed(4);
-  return v.toFixed(6);
+function calcEMA(arr,p){
+  var k=2/(p+1),ema=null,sum=0,cnt=0,res=[];
+  for(var i=0;i<arr.length;i++){
+    if(arr[i]===null){res.push(null);continue;}
+    sum+=arr[i];cnt++;
+    if(cnt<p){res.push(null);continue;}
+    if(cnt===p){ema=sum/p;res.push(ema);continue;}
+    ema=arr[i]*k+ema*(1-k);res.push(ema);
+  }
+  return res;
 }
 
-function badge(id, text, cls) {
-  var e = el(id);
-  e.textContent = text;
-  e.className = 'badge ' + cls;
+function calcBB(cls,p,m){
+  var up=[],md=[],lo=[];
+  for(var i=0;i<cls.length;i++){
+    if(i<p-1){up.push(null);md.push(null);lo.push(null);continue;}
+    var sl=cls.slice(i-p+1,i+1);
+    var sma=sl.reduce(function(a,b){return a+b;},0)/p;
+    var vr=sl.reduce(function(a,b){return a+Math.pow(b-sma,2);},0)/p;
+    var sd=Math.sqrt(vr);
+    up.push(sma+m*sd);md.push(sma);lo.push(sma-m*sd);
+  }
+  return{up:up,md:md,lo:lo};
 }
 
-function getCcy(id) { return id.split('-')[0]; }
-function getIdxId(id) { var p = id.split('-'); return p[0] + '-' + p[1]; }
-
-async function apiFetch(url) {
-  var r = await fetch(url);
-  if (!r.ok) throw new Error('HTTP ' + r.status);
-  return r.json();
+function calcRSI(cls,p){
+  var res=[];
+  for(var i=0;i<cls.length;i++){
+    if(i<p){res.push(null);continue;}
+    var g=0,l=0;
+    for(var j=i-p+1;j<=i;j++){var d=cls[j]-cls[j-1];if(d>0)g+=d;else l-=d;}
+    res.push(100-100/(1+g/(l||1e-9)));
+  }
+  return res;
 }
 
-// ── Chart ──
-function initChart() {
-  var wrap = el('chartWrap');
-  wrap.innerHTML = '';
-  chart = LightweightCharts.createChart(wrap, {
-    width:  wrap.clientWidth,
-    height: wrap.clientHeight,
-    layout:    { background: { color: '#0e0f11' }, textColor: '#848e9c' },
-    grid:      { vertLines: { color: '#1e2329' }, horzLines: { color: '#1e2329' } },
-    crosshair: { mode: LightweightCharts.CrosshairMode.Normal },
-    rightPriceScale: { borderColor: '#2b2f36' },
-    timeScale: { borderColor: '#2b2f36', timeVisible: true, secondsVisible: false },
+function calcMACD(cls){
+  var e12=calcEMA(cls,12),e26=calcEMA(cls,26);
+  var macd=cls.map(function(_,i){return(e12[i]===null||e26[i]===null)?null:e12[i]-e26[i];});
+  var vals=[],idxMap=[];
+  for(var i=0;i<macd.length;i++){if(macd[i]!==null){vals.push(macd[i]);idxMap.push(i);}}
+  var s9=calcEMA(vals,9);
+  var sig=new Array(cls.length).fill(null);
+  for(var i=0;i<idxMap.length;i++){sig[idxMap[i]]=s9[i]!==undefined?s9[i]:null;}
+  return{macd:macd,sig:sig};
+}
+
+function calcCVD(data){
+  var cvd=0,res=[];
+  for(var i=0;i<data.length;i++){
+    var c=data[i],rng=c.high-c.low;
+    cvd+=rng>0?((c.close-c.open)/rng)*c.volume:0;
+    res.push(cvd);
+  }
+  return res;
+}
+
+var CHARTCFG = {
+  layout:{background:{color:'#0e0f11'},textColor:'#848e9c'},
+  grid:{vertLines:{color:'#1e2329'},horzLines:{color:'#1e2329'}},
+  crosshair:{mode:LightweightCharts.CrosshairMode.Normal},
+  rightPriceScale:{borderColor:'#2b2f36'},
+  timeScale:{borderColor:'#2b2f36',timeVisible:true,secondsVisible:false},
+};
+
+function mkChart(wrap,hideTime,margins){
+  var cfg=JSON.parse(JSON.stringify(CHARTCFG));
+  cfg.width=wrap.clientWidth;cfg.height=wrap.clientHeight;
+  if(hideTime)cfg.timeScale.visible=false;
+  if(margins)cfg.rightPriceScale.scaleMargins=margins;
+  var c=LightweightCharts.createChart(wrap,cfg);
+  new ResizeObserver(function(){c.applyOptions({width:wrap.clientWidth,height:wrap.clientHeight});}).observe(wrap);
+  return c;
+}
+
+function initCharts(){
+  var mw=el('mainWrap');mw.innerHTML='';
+  CH.main=mkChart(mw,true);
+  SR.candles=CH.main.addCandlestickSeries({upColor:'#0ecb81',downColor:'#f6465d',borderUpColor:'#0ecb81',borderDownColor:'#f6465d',wickUpColor:'#0ecb81',wickDownColor:'#f6465d'});
+
+  Object.keys(EMA_PER).forEach(function(k){
+    SR[k]=CH.main.addLineSeries({color:EMA_COL[k],lineWidth:1,priceLineVisible:false,lastValueVisible:false,crosshairMarkerVisible:false,visible:vis[k]});
   });
-  series = chart.addCandlestickSeries({
-    upColor: '#0ecb81', downColor: '#f6465d',
-    borderUpColor: '#0ecb81', borderDownColor: '#f6465d',
-    wickUpColor: '#0ecb81', wickDownColor: '#f6465d',
+
+  var LS=LightweightCharts.LineStyle;
+  SR.bbUp=CH.main.addLineSeries({color:'rgba(96,165,250,0.5)',lineWidth:1,lineStyle:LS.Dashed,priceLineVisible:false,lastValueVisible:false,crosshairMarkerVisible:false,visible:vis.bb});
+  SR.bbMd=CH.main.addLineSeries({color:'rgba(96,165,250,0.3)',lineWidth:1,priceLineVisible:false,lastValueVisible:false,crosshairMarkerVisible:false,visible:vis.bb});
+  SR.bbLo=CH.main.addLineSeries({color:'rgba(96,165,250,0.5)',lineWidth:1,lineStyle:LS.Dashed,priceLineVisible:false,lastValueVisible:false,crosshairMarkerVisible:false,visible:vis.bb});
+
+  var mw2=el('macdWrap');mw2.innerHTML='<span class="slabel">MACD</span>';
+  CH.macd=mkChart(mw2,true,{top:.1,bottom:.1});
+  SR.macdH=CH.macd.addHistogramSeries({priceLineVisible:false,lastValueVisible:false});
+  SR.macdL=CH.macd.addLineSeries({color:'#1890ff',lineWidth:1,priceLineVisible:false,lastValueVisible:false,crosshairMarkerVisible:false});
+  SR.macdS=CH.macd.addLineSeries({color:'#f0b90b',lineWidth:1,priceLineVisible:false,lastValueVisible:false,crosshairMarkerVisible:false});
+
+  var rw=el('rsiWrap');rw.innerHTML='<span class="slabel">RSI 14</span>';
+  CH.rsi=mkChart(rw,true,{top:.05,bottom:.05});
+  SR.rsiL=CH.rsi.addLineSeries({color:'#8b5cf6',lineWidth:1,priceLineVisible:false,lastValueVisible:true,crosshairMarkerVisible:false});
+  SR.rsiL.createPriceLine({price:70,color:'rgba(246,70,93,0.5)',lineWidth:1,lineStyle:LightweightCharts.LineStyle.Dashed,axisLabelVisible:true,title:''});
+  SR.rsiL.createPriceLine({price:50,color:'rgba(132,142,156,0.2)',lineWidth:1,lineStyle:LightweightCharts.LineStyle.Dotted,axisLabelVisible:false,title:''});
+  SR.rsiL.createPriceLine({price:30,color:'rgba(14,203,129,0.5)',lineWidth:1,lineStyle:LightweightCharts.LineStyle.Dashed,axisLabelVisible:true,title:''});
+
+  var cw=el('cvdWrap');cw.innerHTML='<span class="slabel">CVD</span>';
+  CH.cvd=mkChart(cw,true,{top:.1,bottom:.1});
+  SR.cvdH=CH.cvd.addHistogramSeries({priceLineVisible:false,lastValueVisible:false});
+
+  var ow=el('oiWrap');ow.innerHTML='<span class="slabel">持仓 OI</span>';
+  CH.oi=mkChart(ow,false,{top:.1,bottom:.1});
+  SR.oiL=CH.oi.addLineSeries({color:'#06b6d4',lineWidth:1,priceLineVisible:false,lastValueVisible:true});
+
+  function syncFrom(src){
+    return function(rng){
+      if(syncing||!rng)return;
+      syncing=true;
+      Object.keys(CH).forEach(function(k){if(CH[k]!==src)CH[k].timeScale().setVisibleLogicalRange(rng);});
+      syncing=false;
+    };
+  }
+  Object.keys(CH).forEach(function(k){CH[k].timeScale().subscribeVisibleLogicalRangeChange(syncFrom(CH[k]));});
+
+  CH.main.timeScale().subscribeVisibleLogicalRangeChange(function(rng){
+    if(rng&&rng.from<=10)loadMoreCandles();
   });
-  new ResizeObserver(function() {
-    chart.applyOptions({ width: wrap.clientWidth, height: wrap.clientHeight });
-  }).observe(wrap);
 }
 
-// ── Candles ──
-async function loadCandles() {
-  try {
-    var d = await apiFetch('https://www.okx.com/api/v5/market/candles?instId=' + instId + '&bar=' + tf + '&limit=300');
-    if (d.code !== '0') return;
-    var data = d.data.reverse().map(function(c) {
-      return {
-        time:  Math.floor(parseInt(c[0]) / 1000),
-        open:  parseFloat(c[1]),
-        high:  parseFloat(c[2]),
-        low:   parseFloat(c[3]),
-        close: parseFloat(c[4]),
-      };
-    });
-    series.setData(data);
-    chart.timeScale().fitContent();
-    var last  = data[data.length - 1];
-    var first = data[0];
-    lastPx = last.close;
-    var chg = ((last.close - first.open) / first.open * 100).toFixed(2);
-    el('pxMain').textContent = fmtPx(last.close);
-    el('pxChg').textContent  = (chg >= 0 ? '+' : '') + chg + '%';
-    el('pxChg').style.color  = chg >= 0 ? '#0ecb81' : '#f6465d';
-    el('instTag').textContent = instId;
-  } catch(e) { console.warn('candles error:', e); }
+function applyIndicators(){
+  if(!candleData.length)return;
+  var ts=candleData.map(function(c){return c.time;});
+  var cl=candleData.map(function(c){return c.close;});
+
+  Object.keys(EMA_PER).forEach(function(k){
+    var ema=calcEMA(cl,EMA_PER[k]),out=[];
+    for(var i=0;i<ts.length;i++){if(ema[i]!==null)out.push({time:ts[i],value:ema[i]});}
+    SR[k].setData(out);
+  });
+
+  var bb=calcBB(cl,20,2),bbu=[],bbm=[],bbl=[];
+  for(var i=0;i<ts.length;i++){if(bb.up[i]!==null){bbu.push({time:ts[i],value:bb.up[i]});bbm.push({time:ts[i],value:bb.md[i]});bbl.push({time:ts[i],value:bb.lo[i]});}}
+  SR.bbUp.setData(bbu);SR.bbMd.setData(bbm);SR.bbLo.setData(bbl);
+
+  var mc=calcMACD(cl),mh=[],ml=[],ms=[];
+  for(var i=0;i<ts.length;i++){
+    var mv=mc.macd[i],sv=mc.sig[i];
+    if(mv!==null){var h=sv!==null?mv-sv:0;mh.push({time:ts[i],value:h,color:h>=0?'rgba(14,203,129,.7)':'rgba(246,70,93,.7)'});ml.push({time:ts[i],value:mv});}
+    if(sv!==null)ms.push({time:ts[i],value:sv});
+  }
+  SR.macdH.setData(mh);SR.macdL.setData(ml);SR.macdS.setData(ms);
+
+  var rsi=calcRSI(cl,14),rd=[];
+  for(var i=0;i<ts.length;i++){if(rsi[i]!==null)rd.push({time:ts[i],value:rsi[i]});}
+  SR.rsiL.setData(rd);
+
+  var cvd=calcCVD(candleData),cd=[];
+  for(var i=0;i<ts.length;i++){var prev=i>0?cvd[i-1]:0;cd.push({time:ts[i],value:cvd[i],color:cvd[i]>=prev?'rgba(14,203,129,.7)':'rgba(246,70,93,.7)'});}
+  SR.cvdH.setData(cd);
 }
 
-// ── Public indicators ──
-async function loadPublic() {
-  try {
-    var results = await Promise.all([
-      apiFetch('https://www.okx.com/api/v5/public/funding-rate?instId=' + instId),
-      apiFetch('https://www.okx.com/api/v5/public/mark-price?instType=SWAP&instId=' + instId),
-      apiFetch('https://www.okx.com/api/v5/market/index-tickers?instId=' + getIdxId(instId)),
-      apiFetch('https://www.okx.com/api/v5/public/open-interest?instId=' + instId),
+async function loadCandles(){
+  try{
+    var d=await api('https://www.okx.com/api/v5/market/candles?instId='+instId+'&bar='+tf+'&limit=300');
+    if(d.code!=='0')return;
+    candleData=d.data.reverse().map(function(c){return{time:Math.floor(parseInt(c[0])/1000),open:parseFloat(c[1]),high:parseFloat(c[2]),low:parseFloat(c[3]),close:parseFloat(c[4]),volume:parseFloat(c[5])};});
+    SR.candles.setData(candleData);
+    CH.main.timeScale().fitContent();
+    oldestTs = candleData[0].time;
+    var last=candleData[candleData.length-1],first=candleData[0];
+    lastPx=last.close;
+    var chg=((last.close-first.open)/first.open*100).toFixed(2);
+    el('pxMain').textContent=fmtPx(last.close);
+    el('pxChg').textContent=(chg>=0?'+':'')+chg+'%';
+    el('pxChg').style.color=chg>=0?'#0ecb81':'#f6465d';
+    el('itag').textContent=instId;
+    applyIndicators();
+  }catch(e){console.warn('candles:',e);}
+}
+
+async function loadMoreCandles(){
+  if(loadingMore||!oldestTs||!candleData.length)return;
+  loadingMore=true;
+  try{
+    var before=oldestTs*1000;
+    var d=await api('https://www.okx.com/api/v5/market/history-candles?instId='+instId+'&bar='+tf+'&before='+before+'&limit=300');
+    if(d.code!=='0'||!d.data||!d.data.length){loadingMore=false;return;}
+    var newC=d.data.slice().reverse().map(function(c){return{time:Math.floor(parseInt(c[0])/1000),open:parseFloat(c[1]),high:parseFloat(c[2]),low:parseFloat(c[3]),close:parseFloat(c[4]),volume:parseFloat(c[5])};});
+    if(!newC.length){loadingMore=false;return;}
+    candleData=newC.concat(candleData);
+    oldestTs=candleData[0].time;
+    SR.candles.setData(candleData);
+    applyIndicators();
+  }catch(e){console.warn('loadMore:',e);}
+  loadingMore=false;
+}
+
+async function loadOIChart(){
+  if(!workerOk||!vis.oi)return;
+  try{
+    var d=await api(WORKER_URL+'/api/v5/rubik/stat/contracts/open-interest-volume?ccy='+getCcy(instId)+'&period='+tf+'&limit=300');
+    if(d.code!=='0'||!d.data)return;
+    var out=d.data.slice().reverse().map(function(r){return{time:Math.floor(parseInt(r[0])/1000),value:parseFloat(r[1])};});
+    SR.oiL.setData(out);
+  }catch(e){console.warn('oi chart:',e);}
+}
+
+async function loadPublic(){
+  try{
+    var rs=await Promise.all([
+      api('https://www.okx.com/api/v5/public/funding-rate?instId='+instId),
+      api('https://www.okx.com/api/v5/public/mark-price?instType=SWAP&instId='+instId),
+      api('https://www.okx.com/api/v5/market/index-tickers?instId='+getIdx(instId)),
+      api('https://www.okx.com/api/v5/public/open-interest?instId='+instId),
     ]);
-    var frD = results[0], mkD = results[1], idxD = results[2], oiD = results[3];
-
-    if (frD.code === '0' && frD.data && frD.data[0]) {
-      var fr     = parseFloat(frD.data[0].fundingRate) * 100;
-      var frNext = parseFloat(frD.data[0].nextFundingRate) * 100;
-      var nextTs = parseInt(frD.data[0].nextFundingTime);
-      var mins   = Math.max(0, Math.round((nextTs - Date.now()) / 60000));
-      var hhmm   = mins > 60 ? Math.floor(mins/60) + 'h ' + (mins%60) + 'm' : mins + 'm';
-      el('frVal').textContent  = fr.toFixed(4) + '%';
-      el('frNext').textContent = frNext.toFixed(4) + '%';
-      el('frTime').textContent = hhmm + ' 后';
-      var sc = 0, lbl = '中性', cls = 'b-neu';
-      if      (fr >  0.1)  { sc = -2; lbl = '多头过热'; cls = 'b-bear'; }
-      else if (fr >  0.05) { sc = -1; lbl = '偏高';     cls = 'b-warn'; }
-      else if (fr < -0.1)  { sc =  2; lbl = '空头拥挤'; cls = 'b-bull'; }
-      else if (fr < -0.05) { sc =  1; lbl = '偏低';     cls = 'b-bull'; }
-      badge('frBadge', lbl, cls);
-      scores.funding = sc;
+    var frD=rs[0],mkD=rs[1],idD=rs[2],oiD=rs[3];
+    if(frD.code==='0'&&frD.data&&frD.data[0]){
+      var fr=parseFloat(frD.data[0].fundingRate)*100,frN=parseFloat(frD.data[0].nextFundingRate)*100;
+      var nts=parseInt(frD.data[0].nextFundingTime),mins=Math.max(0,Math.round((nts-Date.now())/60000));
+      el('frVal').textContent=fr.toFixed(4)+'%';el('frNext').textContent=frN.toFixed(4)+'%';
+      el('frTime').textContent=(mins>60?Math.floor(mins/60)+'h '+(mins%60)+'m':mins+'m')+' 后';
+      var sc=0,lb='中性',cl='b-neu';
+      if(fr>0.1){sc=-2;lb='多头过热';cl='b-bear';}else if(fr>0.05){sc=-1;lb='偏高';cl='b-warn';}
+      else if(fr<-0.1){sc=2;lb='空头拥挤';cl='b-bull';}else if(fr<-0.05){sc=1;lb='偏低';cl='b-bull';}
+      bdg('frB',lb,cl);scores.funding=sc;
     }
-
-    if (mkD.code === '0' && mkD.data && mkD.data[0]) {
-      var mark = parseFloat(mkD.data[0].markPx);
-      el('markPx').textContent = fmtPx(mark);
-      if (idxD.code === '0' && idxD.data && idxD.data[0]) {
-        var idx   = parseFloat(idxD.data[0].idxPx);
-        var basis = ((mark - idx) / idx * 100);
-        el('idxPx').textContent    = fmtPx(idx);
-        el('basisVal').textContent = basis.toFixed(4) + '%';
-        var bl = '中性', bc = 'b-neu';
-        if (basis >  0.1) { bl = '期货溢价'; bc = 'b-bull'; }
-        else if (basis < -0.1) { bl = '期货贴水'; bc = 'b-bear'; }
-        badge('basisBadge', bl, bc);
+    if(mkD.code==='0'&&mkD.data&&mkD.data[0]){
+      var mk=parseFloat(mkD.data[0].markPx);el('markPx').textContent=fmtPx(mk);
+      if(idD.code==='0'&&idD.data&&idD.data[0]){
+        var idx=parseFloat(idD.data[0].idxPx),bas=((mk-idx)/idx*100);
+        el('idxPx').textContent=fmtPx(idx);el('basisVal').textContent=bas.toFixed(4)+'%';
+        var bl='中性',bc='b-neu';if(bas>0.1){bl='期货溢价';bc='b-bull';}else if(bas<-0.1){bl='期货贴水';bc='b-bear';}
+        bdg('basisB',bl,bc);
       }
     }
-
-    if (oiD.code === '0' && oiD.data && oiD.data[0]) {
-      var oiCcy = parseFloat(oiD.data[0].oiCcy);
-      var oiUsd = lastPx > 0 ? oiCcy * lastPx : 0;
-      var ccy   = getCcy(instId);
-      if      (oiUsd > 1e9) el('oiVal').textContent = '$' + (oiUsd/1e9).toFixed(2) + 'B';
-      else if (oiUsd > 1e6) el('oiVal').textContent = '$' + (oiUsd/1e6).toFixed(1) + 'M';
-      else                  el('oiVal').textContent = oiCcy.toFixed(2) + ' ' + ccy;
+    if(oiD.code==='0'&&oiD.data&&oiD.data[0]){
+      var oc=parseFloat(oiD.data[0].oiCcy),ou=lastPx>0?oc*lastPx:0,cy=getCcy(instId);
+      if(ou>1e9)el('oiVal').textContent='$'+(ou/1e9).toFixed(2)+'B';
+      else if(ou>1e6)el('oiVal').textContent='$'+(ou/1e6).toFixed(1)+'M';
+      else el('oiVal').textContent=oc.toFixed(2)+' '+cy;
     }
-  } catch(e) { console.warn('public error:', e); }
+  }catch(e){console.warn('pub:',e);}
 }
 
-// ── Proxy indicators ──
-async function loadProxy() {
-  if (!workerOk) {
-    el('warnBar').style.display = 'block';
-    ['lsRetail','lsTop','takerVal'].forEach(function(id) { el(id).textContent = 'N/A'; });
-    ['lsRetailB','lsTopB','takerB'].forEach(function(id) { badge(id, '需配置 Worker', 'b-warn'); });
-    return;
-  }
-  var ccy = getCcy(instId);
-  try {
-    var results = await Promise.all([
-      apiFetch(WORKER_URL + '/api/v5/rubik/stat/contracts/long-short-account-ratio?ccy=' + ccy + '&period=' + tf + '&limit=1'),
-      apiFetch(WORKER_URL + '/api/v5/rubik/stat/contracts/long-short-account-ratio-contract-top-trader?instId=' + instId + '&period=' + tf + '&limit=1'),
-      apiFetch(WORKER_URL + '/api/v5/rubik/stat/taker-volume?ccy=' + ccy + '&instType=CONTRACTS&period=' + tf + '&limit=1'),
+async function loadProxy(){
+  if(!workerOk){el('wbar').style.display='block';['lsR','lsT','tkVal'].forEach(function(id){el(id).textContent='N/A';});['lsRB','lsTB','tkB'].forEach(function(id){bdg(id,'需配置 Worker','b-warn');});return;}
+  var ccy=getCcy(instId);
+  try{
+    var rs=await Promise.all([
+      api(WORKER_URL+'/api/v5/rubik/stat/contracts/long-short-account-ratio?ccy='+ccy+'&period='+tf+'&limit=1'),
+      api(WORKER_URL+'/api/v5/rubik/stat/contracts/long-short-account-ratio-contract-top-trader?instId='+instId+'&period='+tf+'&limit=1'),
+      api(WORKER_URL+'/api/v5/rubik/stat/taker-volume?ccy='+ccy+'&instType=CONTRACTS&period='+tf+'&limit=1'),
     ]);
-    var retD = results[0], topD = results[1], tkD = results[2];
-
-    if (retD.code === '0' && retD.data && retD.data[0]) {
-      var r = parseFloat(retD.data[0][1]);
-      el('lsRetail').textContent = r.toFixed(2);
-      var sc = 0, lbl = '中性', cls = 'b-neu';
-      if      (r > 2.0)  { sc = -2; lbl = '多头过多'; cls = 'b-bear'; }
-      else if (r > 1.5)  { sc = -1; lbl = '偏多头';   cls = 'b-warn'; }
-      else if (r < 0.5)  { sc =  2; lbl = '空头过多'; cls = 'b-bull'; }
-      else if (r < 0.67) { sc =  1; lbl = '偏空头';   cls = 'b-bull'; }
-      badge('lsRetailB', lbl, cls);
-      scores.retailLS = sc;
+    var rD=rs[0],tD=rs[1],kD=rs[2];
+    if(rD.code==='0'&&rD.data&&rD.data[0]){
+      var r=parseFloat(rD.data[0][1]);el('lsR').textContent=r.toFixed(2);
+      var s=0,l='中性',c='b-neu';
+      if(r>2){s=-2;l='多头过多';c='b-bear';}else if(r>1.5){s=-1;l='偏多头';c='b-warn';}
+      else if(r<0.5){s=2;l='空头过多';c='b-bull';}else if(r<0.67){s=1;l='偏空头';c='b-bull';}
+      bdg('lsRB',l,c);scores.retailLS=s;
     }
-
-    if (topD.code === '0' && topD.data && topD.data[0]) {
-      var r2 = parseFloat(topD.data[0][1]);
-      el('lsTop').textContent = r2.toFixed(2);
-      var sc2 = 0, lbl2 = '中性', cls2 = 'b-neu';
-      if      (r2 > 1.5)  { sc2 =  2; lbl2 = '大户偏多'; cls2 = 'b-bull'; }
-      else if (r2 > 1.2)  { sc2 =  1; lbl2 = '略偏多';   cls2 = 'b-bull'; }
-      else if (r2 < 0.67) { sc2 = -2; lbl2 = '大户偏空'; cls2 = 'b-bear'; }
-      else if (r2 < 0.83) { sc2 = -1; lbl2 = '略偏空';   cls2 = 'b-warn'; }
-      badge('lsTopB', lbl2, cls2);
-      scores.topLS = sc2;
+    if(tD.code==='0'&&tD.data&&tD.data[0]){
+      var r2=parseFloat(tD.data[0][1]);el('lsT').textContent=r2.toFixed(2);
+      var s2=0,l2='中性',c2='b-neu';
+      if(r2>1.5){s2=2;l2='大户偏多';c2='b-bull';}else if(r2>1.2){s2=1;l2='略偏多';c2='b-bull';}
+      else if(r2<0.67){s2=-2;l2='大户偏空';c2='b-bear';}else if(r2<0.83){s2=-1;l2='略偏空';c2='b-warn';}
+      bdg('lsTB',l2,c2);scores.topLS=s2;
     }
-
-    if (tkD.code === '0' && tkD.data && tkD.data[0]) {
-      var buyV = parseFloat(tkD.data[0][1]);
-      var selV = parseFloat(tkD.data[0][2]);
-      var tot  = buyV + selV;
-      var pct  = tot > 0 ? buyV / tot * 100 : 50;
-      el('takerVal').textContent = pct.toFixed(1) + '%';
-      var sc3 = 0, lbl3 = '中性', cls3 = 'b-neu';
-      if      (pct > 60) { sc3 =  2; lbl3 = '买盘强势'; cls3 = 'b-bull'; }
-      else if (pct > 55) { sc3 =  1; lbl3 = '买盘偏多'; cls3 = 'b-bull'; }
-      else if (pct < 40) { sc3 = -2; lbl3 = '卖盘强势'; cls3 = 'b-bear'; }
-      else if (pct < 45) { sc3 = -1; lbl3 = '卖盘偏多'; cls3 = 'b-warn'; }
-      badge('takerB', lbl3, cls3);
-      scores.taker = sc3;
+    if(kD.code==='0'&&kD.data&&kD.data[0]){
+      var bv=parseFloat(kD.data[0][1]),sv=parseFloat(kD.data[0][2]),tot=bv+sv,pct=tot>0?bv/tot*100:50;
+      el('tkVal').textContent=pct.toFixed(1)+'%';
+      var s3=0,l3='中性',c3='b-neu';
+      if(pct>60){s3=2;l3='买盘强势';c3='b-bull';}else if(pct>55){s3=1;l3='买盘偏多';c3='b-bull';}
+      else if(pct<40){s3=-2;l3='卖盘强势';c3='b-bear';}else if(pct<45){s3=-1;l3='卖盘偏多';c3='b-warn';}
+      bdg('tkB',l3,c3);scores.taker=s3;
     }
-  } catch(e) { console.warn('proxy error:', e); }
+  }catch(e){console.warn('proxy:',e);}
 }
 
-// ── Liquidations ──
-async function loadLiq() {
-  try {
-    var d = await apiFetch('https://www.okx.com/api/v5/public/liquidation-orders?instType=SWAP&instId=' + instId + '&state=filled&limit=10');
-    if (d.code !== '0' || !d.data || !d.data[0] || !d.data[0].details || !d.data[0].details.length) {
-      el('liqList').innerHTML = '<div class="liq-empty">暂无近期爆仓</div>';
-      return;
-    }
-    el('liqList').innerHTML = d.data[0].details.slice(0, 8).map(function(o) {
-      var isLong = o.side === 'sell';
-      var col    = isLong ? '#f6465d' : '#0ecb81';
-      var lbl    = isLong ? '多头爆仓' : '空头爆仓';
-      var t      = new Date(parseInt(o.ts));
-      var time   = t.getHours().toString().padStart(2,'0') + ':' + t.getMinutes().toString().padStart(2,'0');
-      return '<div class="liq-row"><span style="color:' + col + ';min-width:56px;font-weight:500">' + lbl + '</span><span style="color:var(--t2)">$' + fmtPx(o.bkPx) + '</span><span style="color:var(--t2)">' + parseFloat(o.sz).toFixed(0) + ' 张</span><span style="color:var(--t3)">' + time + '</span></div>';
+async function loadLiq(){
+  try{
+    var d=await api('https://www.okx.com/api/v5/public/liquidation-orders?instType=SWAP&instId='+instId+'&state=filled&limit=10');
+    if(d.code!=='0'||!d.data||!d.data[0]||!d.data[0].details||!d.data[0].details.length){el('liqList').innerHTML='<div class="liqmt">暂无近期爆仓</div>';return;}
+    el('liqList').innerHTML=d.data[0].details.slice(0,8).map(function(o){
+      var iL=o.side==='sell',col=iL?'#f6465d':'#0ecb81',lb=iL?'多头爆仓':'空头爆仓';
+      var t=new Date(parseInt(o.ts)),tm=t.getHours().toString().padStart(2,'0')+':'+t.getMinutes().toString().padStart(2,'0');
+      return'<div class="liqrow"><span style="color:'+col+';min-width:56px;font-weight:500">'+lb+'</span><span style="color:var(--t2)">$'+fmtPx(o.bkPx)+'</span><span style="color:var(--t2)">'+parseFloat(o.sz).toFixed(0)+' 张</span><span style="color:var(--t3)">'+tm+'</span></div>';
     }).join('');
-  } catch(e) {
-    el('liqList').innerHTML = '<div class="liq-empty">暂无数据</div>';
-  }
+  }catch(e){el('liqList').innerHTML='<div class="liqmt">暂无数据</div>';}
 }
 
-// ── Signal ──
-function updateSignal() {
-  var vals  = Object.values(scores);
-  if (!vals.length) return;
-  var total = vals.reduce(function(a, b) { return a + b; }, 0);
-  var max   = vals.length * 2;
-  var icon, name, cls, desc;
-  if      (total >=  5) { icon = '📈'; name = '强多'; cls = 'sb-bull'; desc = '多数指标看多，动能较强'; }
-  else if (total >=  2) { icon = '🔵'; name = '弱多'; cls = 'sb-bull'; desc = '偏多信号，可顺势轻仓'; }
-  else if (total <= -5) { icon = '📉'; name = '强空'; cls = 'sb-bear'; desc = '多数指标看空，注意风险'; }
-  else if (total <= -2) { icon = '🟠'; name = '弱空'; cls = 'sb-bear'; desc = '偏空信号，谨慎做多'; }
-  else                  { icon = '➡'; name = '中性'; cls = 'sb-neu';  desc = '信号混合，建议观望'; }
-
-  el('sigIco').textContent   = icon;
-  el('sigScore').textContent = (total > 0 ? '+' : '') + total;
-  el('sigName').textContent  = name;
-  el('sigDesc').textContent  = desc + '（' + vals.length + ' 项指标）';
-  el('sigBox').className     = 'sig-box ' + cls;
-
-  var segs = [];
-  for (var i = -max; i <= max; i++) {
-    if (i === 0) continue;
-    var sc = 'seg';
-    if (i > 0 && total >= i) sc += ' bull';
-    else if (i < 0 && total <= i) sc += ' bear';
-    segs.push('<div class="' + sc + '"></div>');
-  }
-  el('track').innerHTML = segs.join('');
+function updateSignal(){
+  var vals=Object.values(scores);if(!vals.length)return;
+  var total=vals.reduce(function(a,b){return a+b;},0),max=vals.length*2;
+  var ico,nm,cls,dsc;
+  if(total>=5){ico='📈';nm='强多';cls='sb-bull';dsc='多数指标看多，动能较强';}
+  else if(total>=2){ico='🔵';nm='弱多';cls='sb-bull';dsc='偏多信号，可顺势轻仓';}
+  else if(total<=-5){ico='📉';nm='强空';cls='sb-bear';dsc='多数指标看空，注意风险';}
+  else if(total<=-2){ico='🟠';nm='弱空';cls='sb-bear';dsc='偏空信号，谨慎做多';}
+  else{ico='➡';nm='中性';cls='sb-neu';dsc='信号混合，建议观望';}
+  el('sigIco').textContent=ico;el('sigSco').textContent=(total>0?'+':'')+total;
+  el('sigNm').textContent=nm;el('sigDsc').textContent=dsc+'（'+vals.length+' 项）';
+  el('sigBox').className='sigbox '+cls;
+  var segs=[];for(var i=-max;i<=max;i++){if(i===0)continue;var s='seg';if(i>0&&total>=i)s+=' bull';else if(i<0&&total<=i)s+=' bear';segs.push('<div class="'+s+'"></div>');}
+  el('track').innerHTML=segs.join('');
 }
 
-// ── Search ──
-async function loadInsts() {
-  try {
-    var d = await apiFetch('https://www.okx.com/api/v5/public/instruments?instType=SWAP');
-    if (d.code === '0') allInsts = d.data.filter(function(i) { return i.settleCcy === 'USDT'; }).map(function(i) { return i.instId; });
-  } catch(e) {}
-  if (!allInsts.length) {
-    allInsts = ['BTC-USDT-SWAP','ETH-USDT-SWAP','SOL-USDT-SWAP','BNB-USDT-SWAP',
-                'XRP-USDT-SWAP','DOGE-USDT-SWAP','ADA-USDT-SWAP','AVAX-USDT-SWAP',
-                'LINK-USDT-SWAP','DOT-USDT-SWAP','OP-USDT-SWAP','ARB-USDT-SWAP',
-                'SUI-USDT-SWAP','PEPE-USDT-SWAP','WIF-USDT-SWAP'];
-  }
-}
-
-function setupSearch() {
-  var inp  = el('sinput');
-  var dd   = el('sdd');
-  inp.value = instId;
-
-  inp.addEventListener('input', function() {
-    var q = inp.value.trim().toUpperCase();
-    if (!q) { dd.style.display = 'none'; return; }
-    var hits = allInsts.filter(function(i) { return i.indexOf(q) !== -1; }).slice(0, 20);
-    if (!hits.length) { dd.style.display = 'none'; return; }
-    dd.innerHTML = hits.map(function(h) { return '<div class="dd-item" data-id="' + h + '">' + h + '</div>'; }).join('');
-    dd.style.display = 'block';
-    dd.querySelectorAll('.dd-item').forEach(function(e) {
-      e.addEventListener('click', function() {
-        instId = e.dataset.id;
-        inp.value = instId;
-        dd.style.display = 'none';
-        loadAll();
-      });
+function setupToggles(){
+  document.querySelectorAll('.ibtn[data-ind]').forEach(function(btn){
+    btn.addEventListener('click',function(){
+      var k=btn.dataset.ind;vis[k]=!vis[k];btn.classList.toggle('on',vis[k]);
+      if(k==='bb'){SR.bbUp.applyOptions({visible:vis.bb});SR.bbMd.applyOptions({visible:vis.bb});SR.bbLo.applyOptions({visible:vis.bb});}
+      else if(SR[k])SR[k].applyOptions({visible:vis[k]});
     });
   });
-
-  inp.addEventListener('keydown', function(e) {
-    if (e.key === 'Enter') {
-      var first = dd.querySelector('.dd-item');
-      if (first) first.click();
-    }
-    if (e.key === 'Escape') dd.style.display = 'none';
-  });
-
-  document.addEventListener('click', function(e) {
-    if (!e.target.closest('.search-wrap')) dd.style.display = 'none';
-  });
-}
-
-function setupTf() {
-  document.querySelectorAll('.tf-btn').forEach(function(btn) {
-    btn.addEventListener('click', function() {
-      document.querySelectorAll('.tf-btn').forEach(function(b) { b.classList.remove('active'); });
-      btn.classList.add('active');
-      tf = btn.dataset.tf;
-      loadAll();
+  document.querySelectorAll('.ibtn[data-sub]').forEach(function(btn){
+    btn.addEventListener('click',function(){
+      var k=btn.dataset.sub;vis[k]=!vis[k];btn.classList.toggle('on',vis[k]);
+      el(k+'Wrap').style.display=vis[k]?'block':'none';
+      if(k==='oi'&&vis.oi)loadOIChart();
     });
   });
 }
 
-// ── Main ──
-async function loadAll() {
-  el('dot').classList.add('spin');
-  scores = {};
-  await Promise.all([loadCandles(), loadPublic(), loadProxy(), loadLiq()]);
+async function loadInsts(){
+  try{var d=await api('https://www.okx.com/api/v5/public/instruments?instType=SWAP');if(d.code==='0')allInsts=d.data.filter(function(i){return i.settleCcy==='USDT';}).map(function(i){return i.instId;});}catch(e){}
+  if(!allInsts.length)allInsts=['BTC-USDT-SWAP','ETH-USDT-SWAP','SOL-USDT-SWAP','BNB-USDT-SWAP','XRP-USDT-SWAP','DOGE-USDT-SWAP','ADA-USDT-SWAP','AVAX-USDT-SWAP','LINK-USDT-SWAP','OP-USDT-SWAP','ARB-USDT-SWAP','SUI-USDT-SWAP','PEPE-USDT-SWAP'];
+}
+
+function setupSearch(){
+  var inp=el('sinput'),dd=el('sdd');inp.value=instId;
+  inp.addEventListener('input',function(){
+    var q=inp.value.trim().toUpperCase();if(!q){dd.style.display='none';return;}
+    var hits=allInsts.filter(function(i){return i.indexOf(q)!==-1;}).slice(0,20);
+    if(!hits.length){dd.style.display='none';return;}
+    dd.innerHTML=hits.map(function(h){return'<div class="ddi" data-id="'+h+'">'+h+'</div>';}).join('');
+    dd.style.display='block';
+    dd.querySelectorAll('.ddi').forEach(function(e){e.addEventListener('click',function(){instId=e.dataset.id;inp.value=instId;dd.style.display='none';loadAll();});});
+  });
+  inp.addEventListener('keydown',function(e){if(e.key==='Enter'){var f=dd.querySelector('.ddi');if(f)f.click();}if(e.key==='Escape')dd.style.display='none';});
+  document.addEventListener('click',function(e){if(!e.target.closest('.search-wrap'))dd.style.display='none';});
+}
+
+function setupTf(){
+  document.querySelectorAll('.tf-btn').forEach(function(btn){
+    btn.addEventListener('click',function(){
+      document.querySelectorAll('.tf-btn').forEach(function(b){b.classList.remove('active');});
+      btn.classList.add('active');tf=btn.dataset.tf;loadAll();
+    });
+  });
+}
+
+async function loadAll(){
+  el('dot').classList.add('spin');scores={};
+  await Promise.all([loadCandles(),loadPublic(),loadProxy(),loadLiq()]);
+  if(vis.oi)await loadOIChart();
   updateSignal();
   el('dot').classList.remove('spin');
-  el('rlbl').textContent = '更新 ' + new Date().toLocaleTimeString('zh-CN');
-  if (timer) clearTimeout(timer);
-  timer = setTimeout(loadAll, 30000);
+  el('rlbl').textContent='更新 '+new Date().toLocaleTimeString('zh-CN');
+  if(timer)clearTimeout(timer);
+  timer=setTimeout(loadAll,30000);
 }
 
-// ── Init ──
-(async function() {
-  initChart();
-  setupSearch();
-  setupTf();
-  await loadInsts();
-  await loadAll();
+(async function(){
+  initCharts();setupToggles();setupSearch();setupTf();
+  await loadInsts();await loadAll();
 })();
 </script>
 </body>

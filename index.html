@@ -4,7 +4,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>OKX 市场监控</title>
-<script src="https://cdn.jsdelivr.net/npm/lightweight-charts@4.1.1/dist/lightweight-charts.standalone.production.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/lightweight-charts@4.1.1/dist/lightweight-charts.standalone.production.js" defer></script>
 <style>
 :root{--bg:#0e0f11;--bg2:#161a1d;--bg3:#1e2329;--bd:#2b2f36;--t1:#eaecef;--t2:#848e9c;--t3:#5e6673;--green:#0ecb81;--red:#f6465d;--blue:#1890ff;--amber:#f0b90b;}
 *{box-sizing:border-box;margin:0;padding:0;}
@@ -160,7 +160,7 @@ var WORKER_URL = 'https://okx-proxy.movocardnow.workers.dev';
 
 var instId='BTC-USDT-SWAP',tf='1H';
 var candleData=[],CH={},SR={},syncing=false,timer=null,scores={},lastPx=0,allInsts=[];
-var oldestTs=0,loadingMore=false;
+var oldestTs=0,loadingMore=false,loadMoreEnabled=false;
 var workerOk=WORKER_URL.indexOf('YOUR_WORKER')===-1;
 var vis={ema6:true,ema13:true,ema20:true,ema24:false,ema52:true,ema200:true,bb:false,macd:true,rsi:true,cvd:false,oi:false};
 var EMA_COL={ema6:'#3b82f6',ema13:'#f59e0b',ema20:'#10b981',ema24:'#ec4899',ema52:'#8b5cf6',ema200:'#ef4444'};
@@ -229,8 +229,10 @@ function calcCVD(data){
 
 // ── Chart init ──
 function mkChart(wrap,showTime,margins){
+  var w=wrap.clientWidth||wrap.offsetWidth||800;
+  var h=wrap.clientHeight||wrap.offsetHeight||300;
   var c=LightweightCharts.createChart(wrap,{
-    autoSize:true,
+    width:w,height:h,
     layout:{background:{color:'#0e0f11'},textColor:'#848e9c'},
     grid:{vertLines:{color:'#1e2329'},horzLines:{color:'#1e2329'}},
     crosshair:{mode:LightweightCharts.CrosshairMode.Normal},
@@ -238,6 +240,10 @@ function mkChart(wrap,showTime,margins){
     timeScale:{borderColor:'#2b2f36',timeVisible:true,secondsVisible:false,visible:showTime!==false},
     handleScale:{mouseWheel:true,pinch:true},
   });
+  new ResizeObserver(function(){
+    var nw=wrap.clientWidth,nh=wrap.clientHeight;
+    if(nw>0&&nh>0)c.applyOptions({width:nw,height:nh});
+  }).observe(wrap);
   return c;
 }
 
@@ -298,7 +304,7 @@ function initCharts(){
 
   // Load more candles when scrolled near left
   CH.main.timeScale().subscribeVisibleLogicalRangeChange(function(rng){
-    if(rng&&rng.from<=5)loadMoreCandles();
+    if(loadMoreEnabled&&rng&&rng.from<=5)loadMoreCandles();
   });
 }
 
@@ -351,7 +357,10 @@ async function loadCandles(){
     candleData=d.data.slice().reverse().map(function(c){return{time:Math.floor(parseInt(c[0])/1000),open:parseFloat(c[1]),high:parseFloat(c[2]),low:parseFloat(c[3]),close:parseFloat(c[4]),volume:parseFloat(c[5])};});
     oldestTs=candleData[0].time;
     SR.candles.setData(candleData);
-    setTimeout(function(){CH.main.timeScale().fitContent();},50);
+    setTimeout(function(){
+      CH.main.timeScale().scrollToRealTime();
+      setTimeout(function(){loadMoreEnabled=true;},500);
+    },100);
     var last=candleData[candleData.length-1],first=candleData[0];
     lastPx=last.close;
     var chg=((last.close-first.open)/first.open*100).toFixed(2);
@@ -593,18 +602,18 @@ async function loadAll(){
 }
 
 // Init after layout is ready
-// 等待 LightweightCharts 就绪后初始化
-function startApp(){
-  if(typeof LightweightCharts==='undefined'){setTimeout(startApp,50);return;}
-  setTimeout(function(){
-    initCharts();
-    setupToggles();
-    setupSearch();
-    setupTf();
-    loadInsts().then(function(){return loadAll();});
-  },0);
-}
-startApp();
+// defer 脚本在 DOMContentLoaded 前执行完毕，此时 LightweightCharts 已定义
+document.addEventListener('DOMContentLoaded',function(){
+  if(typeof LightweightCharts==='undefined'){
+    el('mainWrap').innerHTML='<div style="color:#f0b90b;padding:20px;font-size:13px">图表库加载失败，请刷新页面重试</div>';
+    return;
+  }
+  initCharts();
+  setupToggles();
+  setupSearch();
+  setupTf();
+  loadInsts().then(function(){return loadAll();});
+});
 </script>
 </body>
 </html>
